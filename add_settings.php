@@ -55,7 +55,6 @@ if (!empty($smcFunc['db_query'])) {
 		'integrate_redirect' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixRedirectUrl#',
 		'integrate_outgoing_email' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixEmailOutput#',
 		'integrate_exit' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixXMLOutput#',
-		'integrate_load_theme' => '$sourcedir/SimpleSEF.php|SimpleSEF::loadTheme#',
 		'integrate_admin_areas' => '$sourcedir/SimpleSEF.php|SimpleSEF::adminAreas#',
 		'integrate_menu_buttons' => '$sourcedir/SimpleSEF.php|SimpleSEF::menuButtons#',
 		'integrate_actions' => '$sourcedir/SimpleSEF.php|SimpleSEF::actionArray#',
