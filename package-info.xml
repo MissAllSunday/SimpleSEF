@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is http://code.mattzuba.com code.
+   -
+   - The Initial Developer of the Original Code is
+   - Matt Zuba.
+   - Portions created by the Initial Developer are Copyright (C) 2010-2011
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+    <id>slammeddime:simplesef</id>
+    <name>SimpleSEF</name>
+    <version>2.1a</version>
+    <type>modification</type>
+
+    <install for="2.0 - 2.0.99">
+        <readme parsebbc="true">readme.txt</readme>
+        <code>add_settings.php</code>
+        <require-file from="SimpleSEF.php" destination="$sourcedir">Install the core SimpleSEF file</require-file>
+        <require-file name="SimpleSEF.english.php" destination="$languagedir">Language file with all language strings</require-file>
+        <require-file name="SimpleSEF.template.php" destination="$themedir">Template file for admin settings</require-file>
+        <require-file name="SelectSwapper.js" destination="$themedir/scripts">Javascript for ignoring actions</require-file>
+        <require-dir name="SimpleSEF-Db" destination="$sourcedir">Directory containing all translation data for non ASCII characters</require-dir>
+        <create-dir name="SimpleSEF-Ext" destination="$sourcedir">Directory to store extensions in</create-dir>
+        <code type="inline"><![CDATA[<?php
+			global $sourcedir;
+			require_once($sourcedir . '/SimpleSEF.php');
+			SimpleSEF::fixHooks(TRUE);
+		]]>
+        </code>
+        <redirect type="inline" url="?action=admin;area=simplesef;sa=basic" timeout="5000">Thank you for installing SimpleSEF, you will now be redirected to the settings page.</redirect>
+    </install>
+    <uninstall for="2.0 - 2.0.99">
+        <code>remove_settings.php</code>
+        <remove-file name="$languagedir/SimpleSEF.english.php" />
+        <remove-file name="$themedir/SimpleSEF.template.php" />
+        <remove-file name="$themedir/scripts/SelectSwapper.js" />
+        <remove-file name="$sourcedir/SimpleSEF.php" />
+        <remove-dir name="$sourcedir/SimpleSEF-Db" />
+		<remove-dir name="$sourcedir/SimpleSEF-Ext" error="skip" />
+    </uninstall>
+</package-info>
