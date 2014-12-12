@@ -368,7 +368,7 @@ class SimpleSEF
 	 */
 	public function actionArray(&$actions)
 	{
-		$actions['simplesef-404'] = array('SimpleSEF.php', array('SimpleSEF', 'http404NotFound'));
+		$actions['simplesef-404'] = array('SimpleSEF.php', array('SimpleSEF', 'SimpleSEF::http404NotFound#'));
 	}
 
 	/**
@@ -428,14 +428,16 @@ class SimpleSEF
 	{
 		global $txt, $modSettings;
 
+		loadLanguage('SimpleSEF');
+
 		// We insert it after Features and Options
 		$counter = array_search('featuresettings', array_keys($admin_areas['config']['areas'])) + 1;
 
 		$admin_areas['config']['areas'] = array_merge(
 			array_slice($admin_areas['config']['areas'], 0, $counter, TRUE), array('simplesef' => array(
 				'label' => $txt['simplesef'],
-				'function' => create_function(NULL, 'SimpleSEF::ModifySimpleSEFSettings();'),
-				'icon' => 'search.gif',
+				'function' => 'SimpleSEF::settings#',
+				'icon' => 'packages.png',
 				'subsections' => array(
 					'basic' => array($txt['simplesef_basic']),
 					'advanced' => array($txt['simplesef_advanced'], 'enabled' => !empty($modSettings['simplesef_advanced'])),
@@ -452,18 +454,20 @@ class SimpleSEF
 	 * @global array $context
 	 * @global string $sourcedir
 	 */
-	public function ModifySimpleSEFSettings()
+	public function settings()
 	{
 		global $txt, $context, $sourcedir;
 
 		require_once($sourcedir . '/ManageSettings.php');
 
+		loadTemplate('SimpleSEF');
+
 		$context['page_title'] = $txt['simplesef'];
 
 		$subActions = array(
-			'basic' => array('SimpleSEF', 'ModifyBasicSettings'),
-			'advanced' => array('SimpleSEF', 'ModifyAdvancedSettings'),
-			'alias' => array('SimpleSEF', 'ModifyAliasSettings'),
+			'basic' => 'basicSettings',
+			'advanced' => 'advancedSettings',
+			'alias' => 'aliasSettings',
 		);
 
 		loadGeneralSettingParameters($subActions, 'basic');
@@ -473,17 +477,15 @@ class SimpleSEF
 			'title' => $txt['simplesef'],
 			'description' => $txt['simplesef_desc'],
 			'tabs' => array(
-				'basic' => array(
-				),
-				'advanced' => array(
-				),
-				'alias' => array(
-					'description' => $txt['simplesef_alias_desc'],
-				),
+				'basic' => array(),
+				'advanced' => array(),
+				'alias' => array(),
 			),
 		);
 
-		call_user_func($subActions[$_REQUEST['sa']]);
+		$call = !empty($_REQUEST['sa']) && isset($subActions[$_REQUEST['sa']]) ? $subActions[$_REQUEST['sa']] : 'basicSettings';
+
+		$this->$call();
 	}
 
 	/**
@@ -495,9 +497,11 @@ class SimpleSEF
 	 * @global string $boarddir
 	 * @global array $modSettings
 	 */
-	public function ModifyBasicSettings()
+	public function basicSettings()
 	{
-		global $scripturl, $txt, $context, $boarddir, $modSettings;
+		global $scripturl, $txt, $context, $boarddir, $modSettings, $sourcedir;
+
+		require_once($sourcedir . '/ManageServer.php');
 
 		$config_vars = array(
 			array('check', 'simplesef_enable', 'subtext' => $txt['simplesef_enable_desc']),
@@ -510,7 +514,8 @@ class SimpleSEF
 		$context['post_url'] = $scripturl . '?action=admin;area=simplesef;sa=basic;save';
 
 		// Saving?
-		if (isset($_GET['save'])) {
+		if (isset($_GET['save']))
+		{
 			checkSession();
 
 			if (trim($_POST['simplesef_suffix']) == '')
@@ -553,11 +558,10 @@ class SimpleSEF
 	 * @global array $modSettings
 	 * @global array $settings
 	 */
-	public function ModifyAdvancedSettings()
+	public function advancedSettings()
 	{
 		global $scripturl, $txt, $context, $boarddir, $modSettings, $settings;
 
-		loadTemplate('SimpleSEF');
 		$config_vars = array(
 			array('check', 'simplesef_lowercase', 'subtext' => $txt['simplesef_lowercase_desc']),
 			array('large_text', 'simplesef_strip_words', 'size' => 6, 'subtext' => $txt['simplesef_strip_words_desc']),
@@ -621,11 +625,10 @@ class SimpleSEF
 	 * @global array $context
 	 * @global array $modSettings
 	 */
-	public function ModifyAliasSettings()
+	public function aliasSettings()
 	{
 		global $scripturl, $txt, $context, $modSettings;
 
-		loadTemplate('SimpleSEF');
 		$context['sub_template'] = 'alias_settings';
 
 		$context['simplesef_aliases'] = !empty($modSettings['simplesef_aliases']) ? unserialize($modSettings['simplesef_aliases']) : array();
@@ -663,15 +666,6 @@ class SimpleSEF
 
 			redirectexit('action=admin;area=simplesef;sa=alias');
 		}
-	}
-
-	/**
-	 * Implements integrate_load_theme
-	 * Loads up our language files
-	 */
-	public function loadTheme()
-	{
-		loadLanguage('SimpleSEF');
 	}
 
 	/**
