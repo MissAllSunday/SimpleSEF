@@ -150,7 +150,7 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		self::init();
+		$this->init();
 
 		$scripturl = $boardurl . '/index.php';
 

@@ -30,7 +30,7 @@
     <version>2.1a</version>
     <type>modification</type>
 
-    <install for="2.0 - 2.0.99">
+    <install for="2.1 Beta 1, 2.1 - 2.1.99">
         <readme parsebbc="true">readme.txt</readme>
         <code>add_settings.php</code>
         <require-file from="SimpleSEF.php" destination="$sourcedir">Install the core SimpleSEF file</require-file>
