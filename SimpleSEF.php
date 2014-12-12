@@ -28,7 +28,7 @@
 if (!defined('SMF'))
     die('No direct access...');
 
-class SimpleSEF 
+class SimpleSEF
 {
 	/**
 	 * @var Tracks the added queries used during execution
@@ -82,7 +82,7 @@ class SimpleSEF
 	/**
 	 * @var bool Properly track redirects
 	 */
-	private static $redirect = FALSE;
+	private static $redirect = false;
 
 	/**
 	 * Initialize the mod and it's settings.  We can't use a constructor
@@ -94,9 +94,10 @@ class SimpleSEF
 	 * @param boolean $force Force the init to run again if already done
 	 * @return void
 	 */
-	public static function init($force = FALSE) {
+	public static function init($force = false)
+	{
 		global $modSettings;
-		static $done = FALSE;
+		static $done = false;
 
 		if ($done && !$force)
 			return;
@@ -142,7 +143,8 @@ class SimpleSEF
 	 * @global string $sourcedir
 	 * @return void
 	 */
-	public static function convertQueryString() {
+	public static function convertQueryString()
+	{
 		global $boardurl, $modSettings, $scripturl, $smcFunc, $language, $sourcedir;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -201,7 +203,8 @@ class SimpleSEF
 	 * @param string $buffer The output buffer after SMF has output the templates
 	 * @return string Returns the altered buffer (or unaltered if the mod is disabled)
 	 */
-	public static function ob_simplesef($buffer) {
+	public static function ob_simplesef($buffer)
+	{
 		global $scripturl, $smcFunc, $boardurl, $txt, $modSettings, $context;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -286,7 +289,8 @@ class SimpleSEF
 	 * @param boolean $refresh Unused, but declares if we are using meta refresh
 	 * @return <type>
 	 */
-	public static function fixRedirectUrl(&$setLocation, &$refresh) {
+	public static function fixRedirectUrl(&$setLocation, &$refresh)
+	{
 		global $scripturl, $modSettings;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -311,7 +315,8 @@ class SimpleSEF
 	 * @param boolean $do_footer If we didn't do a footer and we're not wireless
 	 * @return void
 	 */
-	public static function fixXMLOutput($do_footer) {
+	public static function fixXMLOutput($do_footer)
+	{
 		global $modSettings;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -340,7 +345,8 @@ class SimpleSEF
 	 * @param string $header Header of the email (we don't adjust this)
 	 * @return boolean Always returns TRUE to prevent SMF from erroring
 	 */
-	public static function fixEmailOutput(&$subject, &$message, &$header) {
+	public static function fixEmailOutput(&$subject, &$message, &$header)
+	{
 		global $modSettings;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -360,7 +366,8 @@ class SimpleSEF
 	 * Implements integrate_actions
 	 * @param array $actions SMF's actions array
 	 */
-	public static function actionArray(&$actions) {
+	public static function actionArray(&$actions)
+	{
 		$actions['simplesef-404'] = array('SimpleSEF.php', array('SimpleSEF', 'http404NotFound'));
 	}
 
@@ -370,7 +377,7 @@ class SimpleSEF
 	public static function http404NotFound() {
 		header('HTTP/1.0 404 Not Found');
 		self::log('404 Not Found: ' . $_SERVER['REQUEST_URL']);
-		fatal_lang_error('simplesef_404', FALSE);
+		fatal_lang_error('simplesef_404', false);
 	}
 
 	/**
@@ -383,7 +390,8 @@ class SimpleSEF
 	 * @param array $menu_buttons Array of menu buttons, post processed
 	 * @return void
 	 */
-	public static function menuButtons(&$menu_buttons) {
+	public static function menuButtons(&$menu_buttons)
+	{
 		global $scripturl, $txt, $modSettings;
 
 		// If there's no admin menu, don't add our button
@@ -416,7 +424,8 @@ class SimpleSEF
 	 * @global array $modSettings
 	 * @param array $admin_areas
 	 */
-	public static function adminAreas(&$admin_areas) {
+	public static function adminAreas(&$admin_areas)
+	{
 		global $txt, $modSettings;
 
 		// We insert it after Features and Options
@@ -443,7 +452,8 @@ class SimpleSEF
 	 * @global array $context
 	 * @global string $sourcedir
 	 */
-	public static function ModifySimpleSEFSettings() {
+	public static function ModifySimpleSEFSettings()
+	{
 		global $txt, $context, $sourcedir;
 
 		require_once($sourcedir . '/ManageSettings.php');
@@ -485,7 +495,8 @@ class SimpleSEF
 	 * @global string $boarddir
 	 * @global array $modSettings
 	 */
-	public static function ModifyBasicSettings() {
+	public static function ModifyBasicSettings()
+	{
 		global $scripturl, $txt, $context, $boarddir, $modSettings;
 
 		$config_vars = array(
@@ -542,7 +553,8 @@ class SimpleSEF
 	 * @global array $modSettings
 	 * @global array $settings
 	 */
-	public static function ModifyAdvancedSettings() {
+	public static function ModifyAdvancedSettings()
+	{
 		global $scripturl, $txt, $context, $boarddir, $modSettings, $settings;
 
 		loadTemplate('SimpleSEF');
@@ -609,7 +621,8 @@ class SimpleSEF
 	 * @global array $context
 	 * @global array $modSettings
 	 */
-	public static function ModifyAliasSettings() {
+	public static function ModifyAliasSettings()
+	{
 		global $scripturl, $txt, $context, $modSettings;
 
 		loadTemplate('SimpleSEF');
@@ -656,7 +669,8 @@ class SimpleSEF
 	 * Implements integrate_load_theme
 	 * Loads up our language files
 	 */
-	public static function loadTheme() {
+	public static function loadTheme()
+	{
 		loadLanguage('SimpleSEF');
 	}
 
@@ -669,7 +683,8 @@ class SimpleSEF
 	 * @param string $url URL to SEFize
 	 * @return string Either the original url if not enabled or ignored, or a new URL
 	 */
-	public static function create_sef_url($url) {
+	public static function create_sef_url($url)
+	{
 		global $sourcedir, $modSettings;
 
 		if (empty($modSettings['simplesef_enable']))
@@ -753,7 +768,8 @@ class SimpleSEF
 		return str_replace('index.php' . (!empty($url_parts['query']) ? '?' . $url_parts['query'] : ''), $sefstring, $url); //$boardurl . '/' . $sefstring . (!empty($url_parts['fragment']) ? '#' . $url_parts['fragment'] : '');
 	}
 
-	public static function fixHooks($force = FALSE) {
+	public static function fixHooks($force = false)
+	{
 		global $smcFunc, $modSettings;
 
 		// We only do this once an hour, no need to overload things
@@ -808,7 +824,8 @@ class SimpleSEF
 	 * @param string $boardName
 	 * @return mixed Will return false if it can't find an id or the id if found
 	 */
-	private static function getBoardId($boardName) {
+	private static function getBoardId($boardName)
+	{
 		global $modSettings;
 
 		if (($boardId = array_search($boardName, self::$boardNames)) !== false)
@@ -837,7 +854,8 @@ class SimpleSEF
 	 * @param int $id Board ID
 	 * @return string
 	 */
-	private static function getBoardName($id) {
+	private static function getBoardName($id)
+	{
 		global $modSettings;
 
 		if (!empty($modSettings['simplesef_simple']))
@@ -867,7 +885,8 @@ class SimpleSEF
 	 * @param int $id
 	 * @return string Topic name with it's associated board name
 	 */
-	private static function getTopicName($id) {
+	private static function getTopicName($id)
+	{
 		global $modSettings, $smcFunc;
 
 		@list($value, $start) = explode('.', $id);
@@ -902,7 +921,8 @@ class SimpleSEF
 	 * @param int $id User ID
 	 * @return string User name
 	 */
-	private static function getUserName($id) {
+	private static function getUserName($id)
+	{
 		global $modSettings, $smcFunc;
 
 		if (!empty($modSettings['simplesef_simple']) || !is_numeric($id))
@@ -929,7 +949,8 @@ class SimpleSEF
 	 * @param string $query Querystring to deal with
 	 * @return array Returns an array suitable to be merged with $_GET
 	 */
-	private static function route($query) {
+	private static function route($query)
+	{
 		global $boardurl, $modSettings, $sourcedir;
 
 		$url_parts = explode('/', trim($query, '/'));
@@ -941,7 +962,7 @@ class SimpleSEF
 			$querystring['action'] = array_shift($url_parts);
 
 			// We may need to fix the action
-			if (($reverse_alias = array_search($current_value, self::$aliasactions)) !== FALSE)
+			if (($reverse_alias = array_search($current_value, self::$aliasactions)) !== false)
 				$querystring['action'] = $reverse_alias;
 			$current_value = reset($url_parts);
 
@@ -1019,7 +1040,8 @@ class SimpleSEF
 	 *
 	 * @global string $sourcedir
 	 */
-	private static function loadExtensions($force = FALSE) {
+	private static function loadExtensions($force = false)
+	{
 		global $sourcedir;
 
 		if ($force || (self::$extensions = cache_get_data('simplsef_extensions', 3600)) === NULL) {
@@ -1049,7 +1071,8 @@ class SimpleSEF
 	 * @global string $language
 	 * @param boolean $force Forces a reload of board names
 	 */
-	private static function loadBoardNames($force = FALSE) {
+	private static function loadBoardNames($force = false)
+	{
 		global $smcFunc, $language;
 
 		if ($force || (self::$boardNames = cache_get_data('simplesef_board_list', 3600)) == NULL) {
@@ -1085,7 +1108,8 @@ class SimpleSEF
 	 * @global array $smcFunc
 	 * @param mixed $ids Can either be a single id or an array of ids
 	 */
-	private static function loadTopicNames($ids) {
+	private static function loadTopicNames($ids)
+	{
 		global $smcFunc;
 
 		$ids = is_array($ids) ? $ids : array($ids);
@@ -1116,7 +1140,8 @@ class SimpleSEF
 	 * @global array $smcFunc
 	 * @param mixed $ids can be either a single id or an array of them
 	 */
-	private static function loadUserNames($ids) {
+	private static function loadUserNames($ids)
+	{
 		global $smcFunc;
 
 		$ids = is_array($ids) ? $ids : array($ids);
@@ -1147,7 +1172,8 @@ class SimpleSEF
 	 * @param string $string String to encode
 	 * @return string Returns an encoded string
 	 */
-	private static function encode($string) {
+	private static function encode($string)
+	{
 		global $modSettings, $sourcedir, $txt;
 		static $utf8_db = array();
 
@@ -1246,7 +1272,8 @@ class SimpleSEF
 	 * @param string $str String to explode
 	 * @return array Exploded string
 	 */
-	private static function explode_csv($str) {
+	private static function explode_csv($str)
+	{
 		return!empty($str) ? preg_replace_callback('/^"(.*)"$/', create_function('$match', 'return trim($match[1]);'), preg_split('/,(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', trim($str))) : array();
 	}
 
@@ -1257,7 +1284,8 @@ class SimpleSEF
 	 *
 	 * @param string $marker
 	 */
-	private static function benchmark($marker) {
+	private static function benchmark($marker)
+	{
 		if (!empty(self::$benchMark['marks'][$marker])) {
 			self::$benchMark['marks'][$marker]['stop'] = microtime(TRUE);
 			self::$benchMark['total'] += self::$benchMark['marks'][$marker]['stop'] - self::$benchMark['marks'][$marker]['start'];
@@ -1272,7 +1300,8 @@ class SimpleSEF
 	 *
 	 * @global array $modSettings
 	 */
-	private static function log() {
+	private static function log()
+	{
 		global $modSettings;
 
 		if (!empty($modSettings['simplesef_debug']))
