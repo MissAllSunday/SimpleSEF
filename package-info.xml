@@ -25,35 +25,31 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-    <id>slammeddime:simplesef</id>
-    <name>SimpleSEF</name>
-    <version>2.1a</version>
-    <type>modification</type>
+	<id>slammeddime:simplesef</id>
+	<name>SimpleSEF</name>
+	<version>2.1.1</version>
+	<type>modification</type>
 
-    <install for="2.1 Beta 1, 2.1 - 2.1.99">
-        <readme parsebbc="true">readme.txt</readme>
-        <code>add_settings.php</code>
-        <require-file from="SimpleSEF.php" destination="$sourcedir">Install the core SimpleSEF file</require-file>
-        <require-file name="SimpleSEF.english.php" destination="$languagedir">Language file with all language strings</require-file>
-        <require-file name="SimpleSEF.template.php" destination="$themedir">Template file for admin settings</require-file>
-        <require-file name="SelectSwapper.js" destination="$themedir/scripts">Javascript for ignoring actions</require-file>
-        <require-dir name="SimpleSEF-Db" destination="$sourcedir">Directory containing all translation data for non ASCII characters</require-dir>
-        <create-dir name="SimpleSEF-Ext" destination="$sourcedir">Directory to store extensions in</create-dir>
-        <code type="inline"><![CDATA[<?php
+	<install for="2.1 Beta 1, 2.1 - 2.1.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<code>add_settings.php</code>
+		<require-dir name="Sources" destination="$boarddir">Sources files</require-dir>
+		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
+		<code type="inline"><![CDATA[<?php
 			global $sourcedir;
 			require_once($sourcedir . '/SimpleSEF.php');
-			SimpleSEF::fixHooks(TRUE);
+			SimpleSEF::fixHooks(true);
 		]]>
-        </code>
-        <redirect type="inline" url="?action=admin;area=simplesef;sa=basic" timeout="5000">Thank you for installing SimpleSEF, you will now be redirected to the settings page.</redirect>
-    </install>
-    <uninstall for="2.0 - 2.0.99">
-        <code>remove_settings.php</code>
-        <remove-file name="$languagedir/SimpleSEF.english.php" />
-        <remove-file name="$themedir/SimpleSEF.template.php" />
-        <remove-file name="$themedir/scripts/SelectSwapper.js" />
-        <remove-file name="$sourcedir/SimpleSEF.php" />
-        <remove-dir name="$sourcedir/SimpleSEF-Db" />
+		</code>
+		<redirect type="inline" url="?action=admin;area=simplesef;sa=basic" timeout="5000">Thank you for installing SimpleSEF, you will now be redirected to the settings page.</redirect>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<code>remove_settings.php</code>
+		<remove-file name="$languagedir/SimpleSEF.english.php" />
+		<remove-file name="$themedir/SimpleSEF.template.php" />
+		<remove-file name="$themedir/scripts/SelectSwapper.js" />
+		<remove-file name="$sourcedir/SimpleSEF.php" />
+		<remove-dir name="$sourcedir/SimpleSEF-Db" />
 		<remove-dir name="$sourcedir/SimpleSEF-Ext" error="skip" />
-    </uninstall>
+	</uninstall>
 </package-info>
