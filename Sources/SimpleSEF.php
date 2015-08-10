@@ -368,7 +368,7 @@ class SimpleSEF
 	 */
 	public function actionArray(&$actions)
 	{
-		$actions['simplesef-404'] = array('SimpleSEF.php', array('SimpleSEF', 'http404NotFound'));
+		$actions['simplesef-404'] = array('SimpleSEF.php', 'SimpleSEF::http404NotFound#');
 	}
 
 	/**
