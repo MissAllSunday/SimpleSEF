@@ -94,7 +94,7 @@ class SimpleSEF
 	 * @param boolean $force Force the init to run again if already done
 	 * @return void
 	 */
-	public static function init($force = false)
+	public function init($force = false)
 	{
 		global $modSettings;
 		static $done = false;
@@ -143,7 +143,7 @@ class SimpleSEF
 	 * @global string $sourcedir
 	 * @return void
 	 */
-	public static function convertQueryString()
+	public function convertQueryString()
 	{
 		global $boardurl, $modSettings, $scripturl, $smcFunc, $language, $sourcedir;
 
@@ -203,7 +203,7 @@ class SimpleSEF
 	 * @param string $buffer The output buffer after SMF has output the templates
 	 * @return string Returns the altered buffer (or unaltered if the mod is disabled)
 	 */
-	public static function ob_simplesef($buffer)
+	public function ob_simplesef($buffer)
 	{
 		global $scripturl, $smcFunc, $boardurl, $txt, $modSettings, $context;
 
@@ -289,7 +289,7 @@ class SimpleSEF
 	 * @param boolean $refresh Unused, but declares if we are using meta refresh
 	 * @return <type>
 	 */
-	public static function fixRedirectUrl(&$setLocation, &$refresh)
+	public function fixRedirectUrl(&$setLocation, &$refresh)
 	{
 		global $scripturl, $modSettings;
 
@@ -315,7 +315,7 @@ class SimpleSEF
 	 * @param boolean $do_footer If we didn't do a footer and we're not wireless
 	 * @return void
 	 */
-	public static function fixXMLOutput($do_footer)
+	public function fixXMLOutput($do_footer)
 	{
 		global $modSettings;
 
@@ -345,7 +345,7 @@ class SimpleSEF
 	 * @param string $header Header of the email (we don't adjust this)
 	 * @return boolean Always returns TRUE to prevent SMF from erroring
 	 */
-	public static function fixEmailOutput(&$subject, &$message, &$header)
+	public function fixEmailOutput(&$subject, &$message, &$header)
 	{
 		global $modSettings;
 
@@ -366,7 +366,7 @@ class SimpleSEF
 	 * Implements integrate_actions
 	 * @param array $actions SMF's actions array
 	 */
-	public static function actionArray(&$actions)
+	public function actionArray(&$actions)
 	{
 		$actions['simplesef-404'] = array('SimpleSEF.php', array('SimpleSEF', 'http404NotFound'));
 	}
@@ -374,7 +374,7 @@ class SimpleSEF
 	/**
 	 * Outputs a simple 'Not Found' message and the 404 header
 	 */
-	public static function http404NotFound()
+	public function http404NotFound()
 	{
 		header('HTTP/1.0 404 Not Found');
 		self::log('404 Not Found: ' . $_SERVER['REQUEST_URL']);
@@ -391,7 +391,7 @@ class SimpleSEF
 	 * @param array $menu_buttons Array of menu buttons, post processed
 	 * @return void
 	 */
-	public static function menuButtons(&$menu_buttons)
+	public function menuButtons(&$menu_buttons)
 	{
 		global $scripturl, $txt, $modSettings;
 
@@ -678,7 +678,7 @@ class SimpleSEF
 	 * @param string $url URL to SEFize
 	 * @return string Either the original url if not enabled or ignored, or a new URL
 	 */
-	public static function create_sef_url($url)
+	public function create_sef_url($url)
 	{
 		global $sourcedir, $modSettings;
 
@@ -763,7 +763,7 @@ class SimpleSEF
 		return str_replace('index.php' . (!empty($url_parts['query']) ? '?' . $url_parts['query'] : ''), $sefstring, $url); //$boardurl . '/' . $sefstring . (!empty($url_parts['fragment']) ? '#' . $url_parts['fragment'] : '');
 	}
 
-	public static function fixHooks($force = false)
+	public function fixHooks($force = false)
 	{
 		global $smcFunc, $modSettings;
 
@@ -787,13 +787,13 @@ class SimpleSEF
 
 		$fixups = array();
 		if (!empty($hooks['integrate_pre_load']) && strpos($hooks['integrate_pre_load'], 'SimpleSEF') !== 0) {
-			$fixups['integrate_pre_load'] = 'SimpleSEF::convertQueryString,' . str_replace(',SimpleSEF::convertQueryString', '', $hooks['integrate_pre_load']);
+			$fixups['integrate_pre_load'] = 'SimpleSEF::convertQueryString#,' . str_replace(',SimpleSEF::convertQueryString#', '', $hooks['integrate_pre_load']);
 		}
 		if (!empty($hooks['integrate_buffer']) && strpos($hooks['integrate_buffer'], 'SimpleSEF') !== 0) {
-			$fixups['integrate_buffer'] = 'SimpleSEF::ob_simplesef,' . str_replace(',SimpleSEF::ob_simplesef', '', $hooks['integrate_buffer']);
+			$fixups['integrate_buffer'] = 'SimpleSEF::ob_simplesef#,' . str_replace(',SimpleSEF::ob_simplesef#', '', $hooks['integrate_buffer']);
 		}
 		if (!empty($hooks['integrate_exit']) && strpos($hooks['integrate_exit'], 'SimpleSEF') !== 0) {
-			$fixups['integrate_exit'] = 'SimpleSEF::fixXMLOutput,' . str_replace(',SimpleSEF::fixXMLOutput', '', $hooks['integrate_exit']);
+			$fixups['integrate_exit'] = 'SimpleSEF::fixXMLOutput#,' . str_replace(',SimpleSEF::fixXMLOutput#', '', $hooks['integrate_exit']);
 		}
 
 		if (!empty($fixups))
