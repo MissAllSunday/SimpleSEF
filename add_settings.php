@@ -39,6 +39,7 @@ $newSettings = array(
 	'simplesef_suffix' => 'html',
 	'simplesef_lowercase' => '1',
 	'simplesef_strip_words' => 'a,about,above,across,after,along,around,at,before,behind,below,beneath,beside,between,but,by,down,during,except,for,from,in,inside,into,like,near,of,off,on,onto,out,outside,over,since,through,the,till,to,toward,under,until,up,upon,with,within,without',
+	'simplesef_ignore_actions' => 'dlattach,.xml,xmlhttp,breezeajax,breezemood,breezecover',
 	'simplesef_actions' => 'activate,admin,announce,attachapprove,buddy,calendar,clock,coppa,credits,deletemsg,dlattach,editpoll,editpoll2,findmember,groups,help,helpadmin,jsmodify,jsoption,likes,loadeditorlocale,lock,lockvoting,login,login2,logintfa,logout,markasread,mergetopics,mlist,moderate,modifycat,movetopic,movetopic2,notify,notifyboard,notifytopic,pm,post,post2,printpage,profile,quotefast,quickmod,quickmod2,recent,reminder,removepoll,removetopic2,reporttm,requestmembers,restoretopic,search,search2,sendactivation,signup,signup2,smstats,suggest,spellcheck,splittopics,stats,sticky,theme,trackip,about:unknown,unread,unreadreplies,verificationcode,viewprofile,vote,viewquery,viewsmfile,who,.xml,xmlhttp',
 	'simplesef_useractions' => 'profile',
 );
