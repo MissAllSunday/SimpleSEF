@@ -82,7 +82,7 @@ class SimpleSEF
 	/**
 	 * @var bool Properly track redirects
 	 */
-	protected $redirect = false;
+	protected static $redirect = false;
 
 	public function __construct()
 	{
@@ -208,6 +208,7 @@ class SimpleSEF
 	public function ob_simplesef($buffer)
 	{
 		global $scripturl, $smcFunc, $boardurl, $txt, $modSettings, $context;
+		static $doReplace = true;;
 
 		if (empty($modSettings['simplesef_enable']))
 			return $buffer;
@@ -270,8 +271,14 @@ class SimpleSEF
 
 		$this->benchmark('buffer');
 
-		if (!empty($context['show_load_time']))
-			$buffer = preg_replace('~(' . preg_quote($txt['page_created']) . '.*?' . preg_quote($txt['queries']) . ')~', '$1<br />' . sprintf($txt['simplesef_adds'], $count) . ' ' . round($this->benchMark['total'], 3) . $txt['seconds_with'] . $this->queryCount . $txt['queries'], $buffer);
+		if (!empty($context['show_load_time']) && $doReplace)
+		{
+			loadLanguage('SimpleSEF');
+			$doReplace = false;
+			$toReplace = sprintf($txt['page_created_full'], $context['load_time'], $context['load_queries']);
+			$replaceWith = sprintf($txt['simplesef__created_full'], round($this->benchMark['total'], 3), $this->queryCount);
+			$buffer = str_replace($toReplace, $toReplace .'<br>'. $replaceWith, $buffer);
+		}
 
 		$this->log('SimpleSEF rewrote ' . $count . ' urls in ' . $this->benchMark['total'] . ' seconds');
 
@@ -298,7 +305,7 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		$this->redirect = true;
+		static::$redirect = true;
 		$this->log('Fixing redirect location: ' . $setLocation);
 
 		// Only do this if it's an URL for this board
@@ -324,12 +331,12 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		if (!$do_footer && !$this->redirect) {
+		if (!$do_footer && !static::$redirect) {
 			$temp = ob_get_contents();
 
 			ob_end_clean();
 			ob_start(!empty($modSettings['enableCompressedOutput']) ? 'ob_gzhandler' : '');
-			ob_start(array('SimpleSEF', 'ob_simplesef'));
+			ob_start(array($this, 'ob_simplesef'));
 
 			echo $temp;
 
@@ -932,6 +939,7 @@ class SimpleSEF
 		// And if it's still empty...
 		if (empty($this->userNames[$id]))
 			return 'user' . $modSettings['simplesef_space'] . $id;
+
 		else
 			return $this->userNames[$id] . $modSettings['simplesef_space'] . $id;
 	}
@@ -1282,7 +1290,7 @@ class SimpleSEF
 	 *
 	 * @param string $marker
 	 */
-	protected function benchmark($marker)
+	public function benchmark($marker)
 	{
 		if (!empty($this->benchMark['marks'][$marker])) {
 			$this->benchMark['marks'][$marker]['stop'] = microtime(TRUE);
@@ -1298,7 +1306,7 @@ class SimpleSEF
 	 *
 	 * @global array $modSettings
 	 */
-	protected function log()
+	public function log()
 	{
 		global $modSettings;
 
