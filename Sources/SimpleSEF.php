@@ -210,7 +210,7 @@ class SimpleSEF
 		global $scripturl, $smcFunc, $boardurl, $txt, $modSettings, $context;
 		static $doReplace = true;;
 
-		if (empty($modSettings['simplesef_enable']))
+		if (empty($modSettings['simplesef_enable']) || (isset($_REQUEST['action']) && in_array($_REQUEST['action'], $this->ignoreactions)))
 			return $buffer;
 
 		$this->benchmark('buffer');
@@ -302,7 +302,7 @@ class SimpleSEF
 	{
 		global $scripturl, $modSettings;
 
-		if (empty($modSettings['simplesef_enable']))
+		if (empty($modSettings['simplesef_enable']) || (isset($_REQUEST['action']) && in_array($_REQUEST['action'], $this->ignoreactions)))
 			return;
 
 		static::$redirect = true;
@@ -328,7 +328,7 @@ class SimpleSEF
 	{
 		global $modSettings;
 
-		if (empty($modSettings['simplesef_enable']))
+		if (empty($modSettings['simplesef_enable']) || (isset($_REQUEST['action']) && in_array($_REQUEST['action'], $this->ignoreactions)))
 			return;
 
 		if (!$do_footer && !static::$redirect) {
