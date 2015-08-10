@@ -33,56 +33,56 @@ class SimpleSEF
 	/**
 	 * @var Tracks the added queries used during execution
 	 */
-	private static $queryCount = 0;
+	protected $queryCount = 0;
 	/**
 	 * @var array Tracks benchmarking information
 	 */
-	private static $benchMark = array('total' => 0, 'marks' => array());
+	protected $benchMark = array('total' => 0, 'marks' => array());
 	/**
 	 * @var array All actions used in the forum (normally defined in index.php
 	 * 	but may come from custom action mod too)
 	 */
-	private static $actions = array();
+	protected $actions = array();
 	/**
 	 * @var array All ignored actions used in the forum
 	 */
-	private static $ignoreactions = array('admin', 'openidreturn');
+	protected $ignoreactions = array('admin', 'openidreturn');
 	/**
 	 * @var array Actions that have aliases
 	 */
-	private static $aliasactions = array();
+	protected $aliasactions = array();
 	/**
 	 * @var array Actions that may have a 'u' or 'user' parameter in the URL
 	 */
-	private static $useractions = array();
+	protected $useractions = array();
 	/**
 	 * @var array Words to strip while encoding
 	 */
-	private static $stripWords = array();
+	protected $stripWords = array();
 	/**
 	 * @var array Characters to strip while encoding
 	 */
-	private static $stripChars = array();
+	protected $stripChars = array();
 	/**
 	 * @var array Stores boards found in the output after a database query
 	 */
-	private static $boardNames = array();
+	protected $boardNames = array();
 	/**
 	 * @var array Stores topics found in the output after a database query
 	 */
-	private static $topicNames = array();
+	protected $topicNames = array();
 	/**
 	 * @var array Stores usernames found in the output after a database query
 	 */
-	private static $userNames = array();
+	protected $userNames = array();
 	/**
 	 * @var array Tracks the available extensions
 	 */
-	private static $extensions = array();
+	protected $extensions = array();
 	/**
 	 * @var bool Properly track redirects
 	 */
-	private static $redirect = false;
+	protected $redirect = false;
 
 	/**
 	 * Initialize the mod and it's settings.  We can't use a constructor
@@ -103,29 +103,29 @@ class SimpleSEF
 			return;
 		$done = TRUE;
 
-		self::$actions = !empty($modSettings['simplesef_actions']) ? explode(',', $modSettings['simplesef_actions']) : array();
-		self::$ignoreactions = array_merge(self::$ignoreactions, !empty($modSettings['simplesef_ignore_actions']) ? explode(',', $modSettings['simplesef_ignore_actions']) : array());
-		self::$aliasactions = !empty($modSettings['simplesef_aliases']) ? unserialize($modSettings['simplesef_aliases']) : array();
-		self::$useractions = !empty($modSettings['simplesef_useractions']) ? explode(',', $modSettings['simplesef_useractions']) : array();
-		self::$stripWords = !empty($modSettings['simplesef_strip_words']) ? self::explode_csv($modSettings['simplesef_strip_words']) : array();
-		self::$stripChars = !empty($modSettings['simplesef_strip_chars']) ? self::explode_csv($modSettings['simplesef_strip_chars']) : array();
+		$this->actions = !empty($modSettings['simplesef_actions']) ? explode(',', $modSettings['simplesef_actions']) : array();
+		$this->ignoreactions = array_merge($this->ignoreactions, !empty($modSettings['simplesef_ignore_actions']) ? explode(',', $modSettings['simplesef_ignore_actions']) : array());
+		$this->aliasactions = !empty($modSettings['simplesef_aliases']) ? unserialize($modSettings['simplesef_aliases']) : array();
+		$this->useractions = !empty($modSettings['simplesef_useractions']) ? explode(',', $modSettings['simplesef_useractions']) : array();
+		$this->stripWords = !empty($modSettings['simplesef_strip_words']) ? $this->explode_csv($modSettings['simplesef_strip_words']) : array();
+		$this->stripChars = !empty($modSettings['simplesef_strip_chars']) ? $this->explode_csv($modSettings['simplesef_strip_chars']) : array();
 
 		// Do a bit of post processing on the arrays above
-		self::$stripWords = array_filter(self::$stripWords, create_function('$value', 'return !empty($value);'));
-		array_walk(self::$stripWords, 'trim');
-		self::$stripChars = array_filter(self::$stripChars, create_function('$value', 'return !empty($value);'));
-		array_walk(self::$stripChars, 'trim');
+		$this->stripWords = array_filter($this->stripWords, create_function('$value', 'return !empty($value);'));
+		array_walk($this->stripWords, 'trim');
+		$this->stripChars = array_filter($this->stripChars, create_function('$value', 'return !empty($value);'));
+		array_walk($this->stripChars, 'trim');
 
-		self::loadBoardNames($force);
-		self::loadExtensions($force);
-		self::fixHooks($force);
+		$this->loadBoardNames($force);
+		$this->loadExtensions($force);
+		$this->fixHooks($force);
 
-		self::log('Pre-fix GET:' . var_export($_GET, TRUE));
+		$this->log('Pre-fix GET:' . var_export($_GET, TRUE));
 
 		// We need to fix our GET array too...
 		parse_str(preg_replace('~&(\w+)(?=&|$)~', '&$1=', strtr($_SERVER['QUERY_STRING'], array(';?' => '&', ';' => '&', '%00' => '', "\0" => ''))), $_GET);
 
-		self::log('Post-fix GET:' . var_export($_GET, TRUE), 'Init Complete (forced: ' . ($force ? 'true' : 'false') . ')');
+		$this->log('Post-fix GET:' . var_export($_GET, TRUE), 'Init Complete (forced: ' . ($force ? 'true' : 'false') . ')');
 	}
 
 	/**
@@ -150,7 +150,7 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		self::init();
+		$this->init();
 
 		$scripturl = $boardurl . '/index.php';
 
@@ -169,16 +169,16 @@ class SimpleSEF
 			return;
 
 		// if the URL contains index.php but not our ignored actions, rewrite the URL
-		if (strpos($_SERVER['REQUEST_URL'], 'index.php') !== false && !(isset($_GET['xml']) || (!empty($_GET['action']) && in_array($_GET['action'], self::$ignoreactions)))) {
-			self::log('Rewriting and redirecting permanently: ' . $_SERVER['REQUEST_URL']);
+		if (strpos($_SERVER['REQUEST_URL'], 'index.php') !== false && !(isset($_GET['xml']) || (!empty($_GET['action']) && in_array($_GET['action'], $this->ignoreactions)))) {
+			$this->log('Rewriting and redirecting permanently: ' . $_SERVER['REQUEST_URL']);
 			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: ' . self::create_sef_url($_SERVER['REQUEST_URL']));
+			header('Location: ' . $this->create_sef_url($_SERVER['REQUEST_URL']));
 			exit();
 		}
 
 		// Parse the url
 		if (!empty($_GET['q'])) {
-			$querystring = self::route($_GET['q']);
+			$querystring = $this->route($_GET['q']);
 			$_GET = $querystring + $_GET;
 			unset($_GET['q']);
 		}
@@ -186,7 +186,7 @@ class SimpleSEF
 		// Need to grab any extra query parts from the original url and tack it on here
 		$_SERVER['QUERY_STRING'] = http_build_query($_GET, '', ';');
 
-		self::log('Post-convert GET:' . var_export($_GET, true));
+		$this->log('Post-convert GET:' . var_export($_GET, true));
 	}
 
 	/**
@@ -210,7 +210,7 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return $buffer;
 
-		self::benchmark('buffer');
+		$this->benchmark('buffer');
 
 		// Bump up our memory limit a bit
 		if (@ini_get('memory_limit') < 128)
@@ -220,13 +220,13 @@ class SimpleSEF
 		$matches = array();
 		preg_match_all('~\b' . preg_quote($scripturl) . '.*?topic=([0-9]+)~', $buffer, $matches);
 		if (!empty($matches[1]))
-			self::loadTopicNames(array_unique($matches[1]));
+			$this->loadTopicNames(array_unique($matches[1]));
 
 		// We need to find urls that include a user id, so we can grab them all and fetch them ahead of time
 		$matches = array();
 		preg_match_all('~\b' . preg_quote($scripturl) . '.*?u=([0-9]+)~', $buffer, $matches);
 		if (!empty($matches[1]))
-			self::loadUserNames(array_unique($matches[1]));
+			$this->loadUserNames(array_unique($matches[1]));
 
 		// Grab all URLs and fix them
 		$matches = array();
@@ -235,7 +235,7 @@ class SimpleSEF
 		if (!empty($matches[0])) {
 			$replacements = array();
 			foreach (array_unique($matches[1]) as $i => $url) {
-				$replacement = self::create_sef_url($url);
+				$replacement = $this->create_sef_url($url);
 				if ($url != $replacement)
 					$replacements[$matches[0][$i]] = $replacement . $matches[2][$i];
 			}
@@ -258,20 +258,20 @@ class SimpleSEF
 		$changeArray = array();
 		$possibleChanges = array('actions', 'useractions');
 		foreach ($possibleChanges as $change)
-			if (empty($modSettings['simplesef_' . $change]) || (substr_count($modSettings['simplesef_' . $change], ',') + 1) != count(self::$$change))
-				$changeArray['simplesef_' . $change] = implode(',', self::$$change);
+			if (empty($modSettings['simplesef_' . $change]) || (substr_count($modSettings['simplesef_' . $change], ',') + 1) != count($this->$change))
+				$changeArray['simplesef_' . $change] = implode(',', $this->$change);
 
 		if (!empty($changeArray)) {
 			updateSettings($changeArray);
-			self::$queryCount++;
+			$this->queryCount++;
 		}
 
-		self::benchmark('buffer');
+		$this->benchmark('buffer');
 
 		if (!empty($context['show_load_time']))
-			$buffer = preg_replace('~(' . preg_quote($txt['page_created']) . '.*?' . preg_quote($txt['queries']) . ')~', '$1<br />' . sprintf($txt['simplesef_adds'], $count) . ' ' . round(self::$benchMark['total'], 3) . $txt['seconds_with'] . self::$queryCount . $txt['queries'], $buffer);
+			$buffer = preg_replace('~(' . preg_quote($txt['page_created']) . '.*?' . preg_quote($txt['queries']) . ')~', '$1<br />' . sprintf($txt['simplesef_adds'], $count) . ' ' . round($this->benchMark['total'], 3) . $txt['seconds_with'] . $this->queryCount . $txt['queries'], $buffer);
 
-		self::log('SimpleSEF rewrote ' . $count . ' urls in ' . self::$benchMark['total'] . ' seconds');
+		$this->log('SimpleSEF rewrote ' . $count . ' urls in ' . $this->benchMark['total'] . ' seconds');
 
 		// I think we're done
 		return $buffer;
@@ -296,12 +296,12 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		self::$redirect = true;
-		self::log('Fixing redirect location: ' . $setLocation);
+		$this->redirect = true;
+		$this->log('Fixing redirect location: ' . $setLocation);
 
 		// Only do this if it's an URL for this board
 		if (strpos($setLocation, $scripturl) !== false)
-			$setLocation = self::create_sef_url($setLocation);
+			$setLocation = $this->create_sef_url($setLocation);
 	}
 
 	/**
@@ -322,7 +322,7 @@ class SimpleSEF
 		if (empty($modSettings['simplesef_enable']))
 			return;
 
-		if (!$do_footer && !self::$redirect) {
+		if (!$do_footer && !$this->redirect) {
 			$temp = ob_get_contents();
 
 			ob_end_clean();
@@ -331,7 +331,7 @@ class SimpleSEF
 
 			echo $temp;
 
-			self::log('Rewriting XML Output');
+			$this->log('Rewriting XML Output');
 		}
 	}
 
@@ -353,10 +353,10 @@ class SimpleSEF
 			return TRUE;
 
 		// We're just fixing the subject and message
-		$subject = self::ob_simplesef($subject);
-		$message = self::ob_simplesef($message);
+		$subject = $this->ob_simplesef($subject);
+		$message = $this->ob_simplesef($message);
 
-		self::log('Rewriting email output');
+		$this->log('Rewriting email output');
 
 		// We must return true, otherwise we fail!
 		return TRUE;
@@ -377,7 +377,7 @@ class SimpleSEF
 	public function http404NotFound()
 	{
 		header('HTTP/1.0 404 Not Found');
-		self::log('404 Not Found: ' . $_SERVER['REQUEST_URL']);
+		$this->log('404 Not Found: ' . $_SERVER['REQUEST_URL']);
 		fatal_lang_error('simplesef_404', false);
 	}
 
@@ -486,7 +486,7 @@ class SimpleSEF
 
 		$call = !empty($_REQUEST['sa']) && isset($subActions[$_REQUEST['sa']]) ? $subActions[$_REQUEST['sa']] : 'basicSettings';
 
-		$this->$call();
+		$this->call();
 	}
 
 	/**
@@ -696,36 +696,36 @@ class SimpleSEF
 
 		if (!empty($params['action'])) {
 			// If we're ignoring this action, just return the original URL
-			if (in_array($params['action'], self::$ignoreactions)) {
-				self::log('create_sef_url: Ignoring ' . $params['action']);
+			if (in_array($params['action'], $this->ignoreactions)) {
+				$this->log('create_sef_url: Ignoring ' . $params['action']);
 				return $url;
 			}
 
-			if (!in_array($params['action'], self::$actions))
-				self::$actions[] = $params['action'];
+			if (!in_array($params['action'], $this->actions))
+				$this->actions[] = $params['action'];
 			$query_parts['action'] = $params['action'];
 			unset($params['action']);
 
 			if (!empty($params['u'])) {
-				if (!in_array($query_parts['action'], self::$useractions))
-					self::$useractions[] = $query_parts['action'];
-				$query_parts['user'] = self::getUserName($params['u']);
+				if (!in_array($query_parts['action'], $this->useractions))
+					$this->useractions[] = $query_parts['action'];
+				$query_parts['user'] = $this->getUserName($params['u']);
 				unset($params['u'], $params['user']);
 			}
 		}
 
-		if (!empty($query_parts['action']) && !empty(self::$extensions[$query_parts['action']])) {
-			require_once($sourcedir . '/SimpleSEF-Ext/' . self::$extensions[$query_parts['action']]);
+		if (!empty($query_parts['action']) && !empty($this->extensions[$query_parts['action']])) {
+			require_once($sourcedir . '/SimpleSEF-Ext/' . $this->extensions[$query_parts['action']]);
 			$class = ucwords($query_parts['action']);
 			$extension = new $class();
 			$sefstring2 = $extension->create($params);
 		} else {
 			if (!empty($params['board'])) {
-				$query_parts['board'] = self::getBoardName($params['board']);
+				$query_parts['board'] = $this->getBoardName($params['board']);
 				unset($params['board']);
 			}
 			if (!empty($params['topic'])) {
-				$query_parts['topic'] = self::getTopicName($params['topic']);
+				$query_parts['topic'] = $this->getTopicName($params['topic']);
 				unset($params['topic']);
 			}
 
@@ -743,8 +743,8 @@ class SimpleSEF
 		}
 
 		// Fix the action if it's being aliased
-		if (isset($query_parts['action']) && !empty(self::$aliasactions[$query_parts['action']]))
-			$query_parts['action'] = self::$aliasactions[$query_parts['action']];
+		if (isset($query_parts['action']) && !empty($this->aliasactions[$query_parts['action']]))
+			$query_parts['action'] = $this->aliasactions[$query_parts['action']];
 
 		// Build the URL
 		if (isset($query_parts['action']))
@@ -783,7 +783,7 @@ class SimpleSEF
 		while (($row = $smcFunc['db_fetch_assoc']($request)))
 			$hooks[$row['variable']] = $row['value'];
 		$smcFunc['db_free_result']($request);
-		self::$queryCount++;
+		$this->queryCount++;
 
 		$fixups = array();
 		if (!empty($hooks['integrate_pre_load']) && strpos($hooks['integrate_pre_load'], 'SimpleSEF') !== 0) {
@@ -805,7 +805,7 @@ class SimpleSEF
 
 		cache_put_data('simplesef_fixhooks', TRUE, 3600);
 
-		self::log('Fixed up integration hooks: ' . var_export($fixups, TRUE));
+		$this->log('Fixed up integration hooks: ' . var_export($fixups, TRUE));
 	}
 
 	/*     * ******************************************
@@ -823,7 +823,7 @@ class SimpleSEF
 	{
 		global $modSettings;
 
-		if (($boardId = array_search($boardName, self::$boardNames)) !== false)
+		if (($boardId = array_search($boardName, $this->boardNames)) !== false)
 			return $boardId . '.0';
 
 		if (($index = strrpos($boardName, $modSettings['simplesef_space'])) === false)
@@ -835,7 +835,7 @@ class SimpleSEF
 		else
 			$page = '0';
 
-		if (($boardId = array_search($boardName, self::$boardNames)) !== false)
+		if (($boardId = array_search($boardName, $this->boardNames)) !== false)
 			return $boardId . '.' . $page;
 		else
 			return false;
@@ -861,9 +861,9 @@ class SimpleSEF
 				$id = substr($id, 0, stripos($id, '.'));
 			}
 
-			if (empty(self::$boardNames[$id]))
-				self::loadBoardNames(TRUE);
-			$boardName = !empty(self::$boardNames[$id]) ? self::$boardNames[$id] : 'board';
+			if (empty($this->boardNames[$id]))
+				$this->loadBoardNames(TRUE);
+			$boardName = !empty($this->boardNames[$id]) ? $this->boardNames[$id] : 'board';
 			if (isset($page) && ($page > 0))
 				$boardName = $boardName . $modSettings['simplesef_space'] . $page;
 		}
@@ -891,16 +891,16 @@ class SimpleSEF
 			return 'topic' . $modSettings['simplesef_space'] . $id . '.' . $modSettings['simplesef_suffix'];
 
 		// If the topic id isn't here (probably from a redirect) we need a query to get it
-		if (empty(self::$topicNames[$value]))
-			self::loadTopicNames((int) $value);
+		if (empty($this->topicNames[$value]))
+			$this->loadTopicNames((int) $value);
 
 		// and if it still doesn't exist
-		if (empty(self::$topicNames[$value])) {
+		if (empty($this->topicNames[$value])) {
 			$topicName = 'topic';
 			$boardName = 'board';
 		} else {
-			$topicName = self::$topicNames[$value]['subject'];
-			$boardName = self::getBoardName(self::$topicNames[$value]['board_id']);
+			$topicName = $this->topicNames[$value]['subject'];
+			$boardName = $this->getBoardName($this->topicNames[$value]['board_id']);
 		}
 
 		// Put it all together
@@ -923,14 +923,14 @@ class SimpleSEF
 		if (!empty($modSettings['simplesef_simple']) || !is_numeric($id))
 			return 'user' . $modSettings['simplesef_space'] . $id;
 
-		if (empty(self::$userNames[$id]))
-			self::loadUserNames((int) $id);
+		if (empty($this->userNames[$id]))
+			$this->loadUserNames((int) $id);
 
 		// And if it's still empty...
-		if (empty(self::$userNames[$id]))
+		if (empty($this->userNames[$id]))
 			return 'user' . $modSettings['simplesef_space'] . $id;
 		else
-			return self::$userNames[$id] . $modSettings['simplesef_space'] . $id;
+			return $this->userNames[$id] . $modSettings['simplesef_space'] . $id;
 	}
 
 	/**
@@ -953,16 +953,16 @@ class SimpleSEF
 
 		$current_value = reset($url_parts);
 		// Do we have an action?
-		if ((in_array($current_value, self::$actions) || in_array($current_value, self::$aliasactions)) && !in_array($current_value, self::$ignoreactions) ) {
+		if ((in_array($current_value, $this->actions) || in_array($current_value, $this->aliasactions)) && !in_array($current_value, $this->ignoreactions) ) {
 			$querystring['action'] = array_shift($url_parts);
 
 			// We may need to fix the action
-			if (($reverse_alias = array_search($current_value, self::$aliasactions)) !== false)
+			if (($reverse_alias = array_search($current_value, $this->aliasactions)) !== false)
 				$querystring['action'] = $reverse_alias;
 			$current_value = reset($url_parts);
 
 			// User
-			if (!empty($current_value) && in_array($querystring['action'], self::$useractions) && ($index = strrpos($current_value, $modSettings['simplesef_space'])) !== false) {
+			if (!empty($current_value) && in_array($querystring['action'], $this->useractions) && ($index = strrpos($current_value, $modSettings['simplesef_space'])) !== false) {
 				$user = substr(array_shift($url_parts), $index + 1);
 				if (is_numeric($user))
 					$querystring['u'] = intval($user);
@@ -971,12 +971,12 @@ class SimpleSEF
 				$current_value = reset($url_parts);
 			}
 
-			if (!empty(self::$extensions[$querystring['action']])) {
-				require_once($sourcedir . '/SimpleSEF-Ext/' . self::$extensions[$querystring['action']]);
+			if (!empty($this->extensions[$querystring['action']])) {
+				require_once($sourcedir . '/SimpleSEF-Ext/' . $this->extensions[$querystring['action']]);
 				$class = ucwords($querystring['action']);
 				$extension = new $class();
 				$querystring += $extension->route($url_parts);
-				self::log('Rerouted "' . $querystring['action'] . '" action with extension');
+				$this->log('Rerouted "' . $querystring['action'] . '" action with extension');
 
 				// Empty it out so it's not handled by this code
 				$url_parts = array();
@@ -1000,7 +1000,7 @@ class SimpleSEF
 				if (preg_match('~^board_(\d+)$~', $current_value, $match))
 					$boardId = $match[1];
 				else
-					$boardId = self::getBoardId($current_value);
+					$boardId = $this->getBoardId($current_value);
 
 				if ($boardId !== false)
 					$querystring['board'] = $boardId;
@@ -1025,7 +1025,7 @@ class SimpleSEF
 			}
 		}
 
-		self::log('Rerouted "' . $query . '" to ' . var_export($querystring, TRUE));
+		$this->log('Rerouted "' . $query . '" to ' . var_export($querystring, TRUE));
 
 		return $querystring;
 	}
@@ -1039,9 +1039,9 @@ class SimpleSEF
 	{
 		global $sourcedir;
 
-		if ($force || (self::$extensions = cache_get_data('simplsef_extensions', 3600)) === NULL) {
+		if ($force || ($this->extensions = cache_get_data('simplsef_extensions', 3600)) === NULL) {
 			$ext_dir = $sourcedir . '/SimpleSEF-Ext';
-			self::$extensions = array();
+			$this->extensions = array();
 			if (is_readable($ext_dir)) {
 				$dh = opendir($ext_dir);
 				while ($filename = readdir($dh)) {
@@ -1049,12 +1049,12 @@ class SimpleSEF
 					if (in_array($filename, array('.', '..')) || preg_match('~ssef_([a-zA-Z_-]+)\.php~', $filename, $match) == 0)
 						continue;
 
-					self::$extensions[$match[1]] = $filename;
+					$this->extensions[$match[1]] = $filename;
 				}
 			}
 
-			cache_put_data('simplesef_extensions', self::$extensions, 3600);
-			self::log('Cache hit failed, reloading extensions');
+			cache_put_data('simplesef_extensions', $this->extensions, 3600);
+			$this->log('Cache hit failed, reloading extensions');
 		}
 	}
 
@@ -1070,7 +1070,7 @@ class SimpleSEF
 	{
 		global $smcFunc, $language;
 
-		if ($force || (self::$boardNames = cache_get_data('simplesef_board_list', 3600)) == NULL) {
+		if ($force || ($this->boardNames = cache_get_data('simplesef_board_list', 3600)) == NULL) {
 			loadLanguage('index', $language, false);
 			$request = $smcFunc['db_query']('', '
 				SELECT id_board, name
@@ -1079,7 +1079,7 @@ class SimpleSEF
 			$boards = array();
 			while ($row = $smcFunc['db_fetch_assoc']($request)) {
 				// A bit extra overhead to account for duplicate board names
-				$temp_name = self::encode($row['name']);
+				$temp_name = $this->encode($row['name']);
 				$i = 0;
 				while (!empty($boards[$temp_name . (!empty($i) ? $i + 1 : '')]))
 					$i++;
@@ -1087,12 +1087,12 @@ class SimpleSEF
 			}
 			$smcFunc['db_free_result']($request);
 
-			self::$boardNames = array_flip($boards);
+			$this->boardNames = array_flip($boards);
 
 			// Add one to the query cound and put the data into the cache
-			self::$queryCount++;
-			cache_put_data('simplesef_board_list', self::$boardNames, 3600);
-			self::log('Cache hit failed, reloading board names');
+			$this->queryCount++;
+			cache_put_data('simplesef_board_list', $this->boardNames, 3600);
+			$this->log('Cache hit failed, reloading board names');
 		}
 	}
 
@@ -1119,13 +1119,13 @@ class SimpleSEF
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request)) {
-			self::$topicNames[$row['id_topic']] = array(
-				'subject' => self::encode($row['subject']),
+			$this->topicNames[$row['id_topic']] = array(
+				'subject' => $this->encode($row['subject']),
 				'board_id' => $row['id_board'],
 			);
 		}
 		$smcFunc['db_free_result']($request);
-		self::$queryCount++;
+		$this->queryCount++;
 	}
 
 	/**
@@ -1149,9 +1149,9 @@ class SimpleSEF
 			)
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-			self::$userNames[$row['id_member']] = self::encode($row['real_name']);
+			$this->userNames[$row['id_member']] = $this->encode($row['real_name']);
 		$smcFunc['db_free_result']($request);
-		self::$queryCount++;
+		$this->queryCount++;
 	}
 
 	/**
@@ -1248,8 +1248,8 @@ class SimpleSEF
 		// Update the string with our new string
 		$string = $result;
 
-		$string = implode(' ', array_diff(explode(' ', $string), self::$stripWords));
-		$string = str_replace(self::$stripChars, '', $string);
+		$string = implode(' ', array_diff(explode(' ', $string), $this->stripWords));
+		$string = str_replace($this->stripChars, '', $string);
 		$string = trim($string, " $modSettings[simplesef_space]\t\n\r");
 		$string = urlencode($string);
 		$string = str_replace('%2F', '', $string);
@@ -1281,12 +1281,12 @@ class SimpleSEF
 	 */
 	private static function benchmark($marker)
 	{
-		if (!empty(self::$benchMark['marks'][$marker])) {
-			self::$benchMark['marks'][$marker]['stop'] = microtime(TRUE);
-			self::$benchMark['total'] += self::$benchMark['marks'][$marker]['stop'] - self::$benchMark['marks'][$marker]['start'];
+		if (!empty($this->benchMark['marks'][$marker])) {
+			$this->benchMark['marks'][$marker]['stop'] = microtime(TRUE);
+			$this->benchMark['total'] += $this->benchMark['marks'][$marker]['stop'] - $this->benchMark['marks'][$marker]['start'];
 		}
 		else
-			self::$benchMark['marks'][$marker]['start'] = microtime(TRUE);
+			$this->benchMark['marks'][$marker]['start'] = microtime(TRUE);
 	}
 
 	/**
