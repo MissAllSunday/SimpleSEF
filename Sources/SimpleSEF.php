@@ -111,9 +111,9 @@ class SimpleSEF
 		$this->stripChars = !empty($modSettings['simplesef_strip_chars']) ? $this->explode_csv($modSettings['simplesef_strip_chars']) : array();
 
 		// Do a bit of post processing on the arrays above
-		$this->stripWords = array_filter($this->stripWords, create_function('$value', 'return !empty($value);'));
+		$this->stripWords = array_filter($this->stripWords, function($value){return !empty($value);});
 		array_walk($this->stripWords, 'trim');
-		$this->stripChars = array_filter($this->stripChars, create_function('$value', 'return !empty($value);'));
+		$this->stripChars = array_filter($this->stripChars, function($value){return !empty($value);});
 		array_walk($this->stripChars, 'trim');
 
 		$this->loadBoardNames($force);
@@ -245,11 +245,11 @@ class SimpleSEF
 
 		// Gotta fix up some javascript laying around in the templates
 		$extra_replacements = array(
-			'/$d\',' => '_%1$d/\',', // Page index for MessageIndex
+			'/$d\',' => $modSettings['simplesef_space'] . '%1$d/\',', // Page index for MessageIndex
 			'/rand,' => '/rand=', // Verification Image
 			'%1.html$d\',' => '%1$d.html\',', // Page index on MessageIndex for topics
 			$boardurl . '/topic/' => $scripturl . '?topic=', // Also for above
-			'%1_%1$d/\',' => '%1$d/\',', // Page index on Members listing
+			'%1' . $modSettings['simplesef_space'] . '%1$d/\',' => '%1$d/\',', // Page index on Members listing
 			'var smf_scripturl = "' . $boardurl . '/' => 'var smf_scripturl = "' . $scripturl,
 		);
 		$buffer = str_replace(array_keys($extra_replacements), array_values($extra_replacements), $buffer);
@@ -819,7 +819,7 @@ class SimpleSEF
 	 * @param string $boardName
 	 * @return mixed Will return false if it can't find an id or the id if found
 	 */
-	private static function getBoardId($boardName)
+	protected function getBoardId($boardName)
 	{
 		global $modSettings;
 
@@ -849,7 +849,7 @@ class SimpleSEF
 	 * @param int $id Board ID
 	 * @return string
 	 */
-	private static function getBoardName($id)
+	protected function getBoardName($id)
 	{
 		global $modSettings;
 
@@ -880,7 +880,7 @@ class SimpleSEF
 	 * @param int $id
 	 * @return string Topic name with it's associated board name
 	 */
-	private static function getTopicName($id)
+	protected function getTopicName($id)
 	{
 		global $modSettings, $smcFunc;
 
@@ -916,7 +916,7 @@ class SimpleSEF
 	 * @param int $id User ID
 	 * @return string User name
 	 */
-	private static function getUserName($id)
+	protected function getUserName($id)
 	{
 		global $modSettings, $smcFunc;
 
@@ -944,7 +944,7 @@ class SimpleSEF
 	 * @param string $query Querystring to deal with
 	 * @return array Returns an array suitable to be merged with $_GET
 	 */
-	private static function route($query)
+	protected function route($query)
 	{
 		global $boardurl, $modSettings, $sourcedir;
 
@@ -1035,7 +1035,7 @@ class SimpleSEF
 	 *
 	 * @global string $sourcedir
 	 */
-	private static function loadExtensions($force = false)
+	protected function loadExtensions($force = false)
 	{
 		global $sourcedir;
 
@@ -1066,7 +1066,7 @@ class SimpleSEF
 	 * @global string $language
 	 * @param boolean $force Forces a reload of board names
 	 */
-	private static function loadBoardNames($force = false)
+	protected function loadBoardNames($force = false)
 	{
 		global $smcFunc, $language;
 
@@ -1103,7 +1103,7 @@ class SimpleSEF
 	 * @global array $smcFunc
 	 * @param mixed $ids Can either be a single id or an array of ids
 	 */
-	private static function loadTopicNames($ids)
+	protected function loadTopicNames($ids)
 	{
 		global $smcFunc;
 
@@ -1135,7 +1135,7 @@ class SimpleSEF
 	 * @global array $smcFunc
 	 * @param mixed $ids can be either a single id or an array of them
 	 */
-	private static function loadUserNames($ids)
+	protected function loadUserNames($ids)
 	{
 		global $smcFunc;
 
@@ -1167,7 +1167,7 @@ class SimpleSEF
 	 * @param string $string String to encode
 	 * @return string Returns an encoded string
 	 */
-	private static function encode($string)
+	protected function encode($string)
 	{
 		global $modSettings, $sourcedir, $txt;
 		static $utf8_db = array();
@@ -1267,7 +1267,7 @@ class SimpleSEF
 	 * @param string $str String to explode
 	 * @return array Exploded string
 	 */
-	private static function explode_csv($str)
+	protected function explode_csv($str)
 	{
 		return!empty($str) ? preg_replace_callback('/^"(.*)"$/', create_function('$match', 'return trim($match[1]);'), preg_split('/,(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', trim($str))) : array();
 	}
@@ -1279,7 +1279,7 @@ class SimpleSEF
 	 *
 	 * @param string $marker
 	 */
-	private static function benchmark($marker)
+	protected function benchmark($marker)
 	{
 		if (!empty($this->benchMark['marks'][$marker])) {
 			$this->benchMark['marks'][$marker]['stop'] = microtime(TRUE);
@@ -1295,7 +1295,7 @@ class SimpleSEF
 	 *
 	 * @global array $modSettings
 	 */
-	private static function log()
+	protected function log()
 	{
 		global $modSettings;
 
