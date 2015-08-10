@@ -30,7 +30,7 @@
 	<version>2.1.1</version>
 	<type>modification</type>
 
-	<install for="2.1 Beta 1, 2.1 - 2.1.99">
+	<install for="2.1 Beta 2, 2.1 - 2.1.99">
 		<readme parsebbc="true">readme.txt</readme>
 		<code>add_settings.php</code>
 		<require-dir name="Sources" destination="$boarddir">Sources files</require-dir>
@@ -38,7 +38,9 @@
 		<code type="inline"><![CDATA[<?php
 			global $sourcedir;
 			require_once($sourcedir . '/SimpleSEF.php');
-			SimpleSEF::fixHooks(true);
+			$simpleSEF = new SimpleSEF();
+			$simpleSEF->fixHooks(true);
+			unset($simpleSEF);
 		]]>
 		</code>
 		<redirect type="inline" url="?action=admin;area=simplesef;sa=basic" timeout="5000">Thank you for installing SimpleSEF, you will now be redirected to the settings page.</redirect>
