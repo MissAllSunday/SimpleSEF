@@ -486,7 +486,7 @@ class SimpleSEF
 
 		$call = !empty($_REQUEST['sa']) && isset($subActions[$_REQUEST['sa']]) ? $subActions[$_REQUEST['sa']] : 'basicSettings';
 
-		$this->call();
+		$this->{$call}();
 	}
 
 	/**
