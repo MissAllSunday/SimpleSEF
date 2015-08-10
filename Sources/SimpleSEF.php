@@ -84,24 +84,9 @@ class SimpleSEF
 	 */
 	protected $redirect = false;
 
-	/**
-	 * Initialize the mod and it's settings.  We can't use a constructor
-	 * might change this in the future (either singleton or two classes,
-	 * one to handle the integration hooks and one that does the dirty work)
-	 *
-	 * @global array $modSettings SMF's modSettings variable
-	 * @staticvar boolean $done Says if this has been done already
-	 * @param boolean $force Force the init to run again if already done
-	 * @return void
-	 */
-	public function init($force = false)
+	public function __construct()
 	{
 		global $modSettings;
-		static $done = false;
-
-		if ($done && !$force)
-			return;
-		$done = TRUE;
 
 		$this->actions = !empty($modSettings['simplesef_actions']) ? explode(',', $modSettings['simplesef_actions']) : array();
 		$this->ignoreactions = array_merge($this->ignoreactions, !empty($modSettings['simplesef_ignore_actions']) ? explode(',', $modSettings['simplesef_ignore_actions']) : array());
@@ -115,6 +100,23 @@ class SimpleSEF
 		array_walk($this->stripWords, 'trim');
 		$this->stripChars = array_filter($this->stripChars, function($value){return !empty($value);});
 		array_walk($this->stripChars, 'trim');
+	}
+
+	/**
+	 * Initialize the mod.
+	 *
+	 * @global array $modSettings SMF's modSettings variable
+	 * @staticvar boolean $done Says if this has been done already
+	 * @param boolean $force Force the init to run again if already done
+	 * @return void
+	 */
+	public function init($force = false)
+	{
+		static $done = false;
+
+		if ($done && !$force)
+			return;
+		$done = TRUE;
 
 		$this->loadBoardNames($force);
 		$this->loadExtensions($force);
@@ -376,6 +378,7 @@ class SimpleSEF
 	 */
 	public function http404NotFound()
 	{
+		loadLanguage('SimpleSEF');
 		header('HTTP/1.0 404 Not Found');
 		$this->log('404 Not Found: ' . $_SERVER['REQUEST_URL']);
 		fatal_lang_error('simplesef_404', false);

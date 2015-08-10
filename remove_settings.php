@@ -49,16 +49,15 @@ $oldSettings = array(
 );
 
 $sef_functions = array(
-    'integrate_pre_load' => 'SimpleSEF::convertQueryString#',
-    'integrate_buffer' => 'SimpleSEF::ob_simplesef#',
-    'integrate_redirect' => 'SimpleSEF::fixRedirectUrl#',
-    'integrate_outgoing_email' => 'SimpleSEF::fixEmailOutput#',
-    'integrate_exit' => 'SimpleSEF::fixXMLOutput#',
-    'integrate_pre_include' => $sourcedir . '/SimpleSEF.php',
-    'integrate_load_theme' => 'SimpleSEF::loadTheme',
-    'integrate_admin_areas' => 'SimpleSEF::adminAreas#',
-    'integrate_menu_buttons' => 'SimpleSEF::menuButtons#',
-    'integrate_actions' => 'SimpleSEF::actionArray#',
+	'integrate_pre_include' => '$sourcedir/SimpleSEF.php',
+	'integrate_pre_load' => 'SimpleSEF::convertQueryString#',
+	'integrate_buffer' => 'SimpleSEF::ob_simplesef#',
+	'integrate_redirect' => 'SimpleSEF::fixRedirectUrl#',
+	'integrate_outgoing_email' => 'SimpleSEF::fixEmailOutput#',
+	'integrate_exit' => 'SimpleSEF::fixXMLOutput#',
+	'integrate_admin_areas' => 'SimpleSEF::adminAreas#',
+	'integrate_menu_buttons' => 'SimpleSEF::menuButtons#',
+	'integrate_actions' => 'SimpleSEF::actionArray#',
 );
 
 if (!empty($smcFunc['db_query'])) {

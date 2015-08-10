@@ -50,14 +50,14 @@ updateSettings($newSettings);
 // Add hooks (for 2.0)
 if (!empty($smcFunc['db_query'])) {
 	$sef_functions = array(
-		'integrate_pre_load' => '$sourcedir/SimpleSEF.php|SimpleSEF::convertQueryString#',
-		'integrate_buffer' => '$sourcedir/SimpleSEF.php|SimpleSEF::ob_simplesef#',
-		'integrate_redirect' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixRedirectUrl#',
-		'integrate_outgoing_email' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixEmailOutput#',
-		'integrate_exit' => '$sourcedir/SimpleSEF.php|SimpleSEF::fixXMLOutput#',
-		'integrate_admin_areas' => '$sourcedir/SimpleSEF.php|SimpleSEF::adminAreas#',
-		'integrate_menu_buttons' => '$sourcedir/SimpleSEF.php|SimpleSEF::menuButtons#',
-		'integrate_actions' => '$sourcedir/SimpleSEF.php|SimpleSEF::actionArray#',
+		'integrate_pre_load' => 'SimpleSEF::convertQueryString#',
+		'integrate_buffer' => 'SimpleSEF::ob_simplesef#',
+		'integrate_redirect' => 'SimpleSEF::fixRedirectUrl#',
+		'integrate_outgoing_email' => 'SimpleSEF::fixEmailOutput#',
+		'integrate_exit' => 'SimpleSEF::fixXMLOutput#',
+		'integrate_admin_areas' => 'SimpleSEF::adminAreas#',
+		'integrate_menu_buttons' => 'SimpleSEF::menuButtons#',
+		'integrate_actions' => 'SimpleSEF::actionArray#',
 	);
 
 	foreach ($sef_functions as $hook => $function)
