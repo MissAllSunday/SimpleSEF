@@ -1215,7 +1215,7 @@ class SimpleSEF
 			}
 			// Two byte unicode character
 			elseif (($charInt & 0xE0) == 0xC0) {
-				$temp1 = $this->ordutf8($string, $i);
+				$temp1 = ord($string[$i++]);
 				if (($temp1 & 0xC0) != 0x80)
 					$character = 63;
 				else
@@ -1223,8 +1223,9 @@ class SimpleSEF
 			}
 			// Three byte unicode character
 			elseif (($charInt & 0xF0) == 0xE0) {
-				$temp1 = $this->ordutf8($string, $i);
-				$temp2 = $this->ordutf8($string, $i);
+				$temp1 = ord($string[$i++]);
+				$ref2 = $i++;
+				$temp2 = isset($string[$ref2]) ? ord($string[$ref2]) : 0;
 				if (($temp1 & 0xC0) != 0x80 || ($temp2 & 0xC0) != 0x80)
 					$character = 63;
 				else
@@ -1232,9 +1233,11 @@ class SimpleSEF
 			}
 			// Four byte unicode character
 			elseif (($charInt & 0xF8) == 0xF0) {
-				$temp1 = $this->ordutf8($string, $i);
-				$temp2 = $this->ordutf8($string, $i);
-				$temp3 = $this->ordutf8($string, $i);
+				$temp1 = ord($string[$i++]);
+				$ref2 = $i++;
+				$temp2 = isset($string[$ref2]) ? ord($string[$ref2]) : 0;
+				$ref3 = $i++;
+				$temp3 = isset($string[$ref3]) ? ord($string[$ref3]) : 0;
 				if (($temp1 & 0xC0) != 0x80 || ($temp2 & 0xC0) != 0x80 || ($temp3 & 0xC0) != 0x80)
 					$character = 63;
 				else
@@ -1272,36 +1275,6 @@ class SimpleSEF
 			$string = strtolower($string);
 
 		return $string;
-	}
-
-	protected function ordutf8($string, &$offset)
-	{
-		$code = ord(substr($string, $offset,1));
-		if ($code >= 128)
-		{
-			if ($code < 224)
-				$bytesnumber = 2;
-
-			else if ($code < 240)
-				$bytesnumber = 3;        //1110xxxx
-
-			else if ($code < 248)
-				$bytesnumber = 4;    //11110xxx
-
-			$codetemp = $code - 192 - ($bytesnumber > 2 ? 32 : 0) - ($bytesnumber > 3 ? 16 : 0);
-
-			for ($i = 2; $i <= $bytesnumber; $i++)
-			{
-				$offset ++;
-				$code2 = ord(substr($string, $offset, 1)) - 128;        //10xxxxxx
-				$codetemp = $codetemp*64 + $code2;
-			}
-			$code = $codetemp;
-		}
-
-		$offset += 1;
-		if ($offset >= strlen($string)) $offset = -1;
-			return $code;
 	}
 
 	/**
