@@ -51,6 +51,7 @@ updateSettings($newSettings);
 // Add hooks (for 2.0)
 if (!empty($smcFunc['db_query'])) {
 	$sef_functions = array(
+		'integrate_pre_include' => '$sourcedir/SimpleSEF.php',
 		'integrate_pre_load' => 'SimpleSEF::convertQueryString#',
 		'integrate_buffer' => 'SimpleSEF::ob_simplesef#',
 		'integrate_redirect' => 'SimpleSEF::fixRedirectUrl#',

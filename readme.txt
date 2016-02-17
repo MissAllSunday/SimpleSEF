@@ -1,15 +1,20 @@
-[center][b][color=red][size=5]SimpleSEF[/size][/color][/b][hr][/center]
+[center][color=purple][size=5][b]SimpleSEF[/b][/size][/color]
+[b]Author:[/b] [url=http://missallsunday.com]Suki[/url][/center]
 
-[url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3751784][img]https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif[/img][/url]
+Original code: https://bitbucket.org/mattzuba/simplesef  released under MPL 1.1.
+
+[color=purple][b][size=12pt]Description[/size][/b][/color]
 
 This mod creates content filled URLs for your forum.
+
+[b]For SMF 2.1.x only[/b]
 
 Examples:[nobbc]
 http://www.yourboard.com/index.php?board=1.0 =>> http://www.yourboard.com/general_discussion/
 http://www.yourboard.com/index.php?topic=1.0 =>> http://www.yourboard.com/general_discussion/welcome_smf_1.0.html
 http://www.yourboard.com/index.php?action=profile =>> http://www.yourboard.com/profile[/nobbc]
 
-Latest Version: 2.1a
+Latest Version: 2.1.1
 
 Features of SimpleSEF:
  - Makes no core code changes to SMF [b]AT ALL[/b]
@@ -27,12 +32,14 @@ Features of SimpleSEF:
 Post-Install Notes:
 Please ensure your .htaccess or web.config file contains the proper information for this mod to work.  Visit the admin panel and click on the [Help] link at the end of the bolded text in the page description for more information.
 
-Change Log
--------------
-v 2.1a
-! Fix error with fixHooks
-! Fix issue causing $context['robot_no_index'] in some areas
-- Removed support for SMF 1.1.x
+[color=purple][b][size=12pt]Changelog[/size][/b][/color]
+[code]
+v 2.1.1
+! Fix error with fixHooks.
+! Fix error with SMF's pagination.
+! Fix issue causing $context['robot_no_index'] in some areas.
+- Removed support for SMF 1.1.x.
++ Full class support.
 
 v 2.0
 + Now makes ZERO code changes to SMF 2.0
@@ -72,3 +79,4 @@ v 1.0.1
 
 v 1.0.0
 + Initial Release
+[/code]
