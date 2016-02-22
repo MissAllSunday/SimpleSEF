@@ -48,7 +48,7 @@ class SimpleSEF
 	/**
 	 * @var array All ignored actions used in the forum
 	 */
-	protected $ignoreactions = array('admin', 'openidreturn');
+	protected $ignoreactions = array('admin', 'openidreturn', 'uploadAttach');
 	/**
 	 * @var array Actions that have aliases
 	 */
