@@ -38,6 +38,7 @@ License, v. 1.1. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://www.mozilla.org/en-US/MPL/1.1/
 		</license>
 		<code>add_settings.php</code>
+		<credits url="http://missallsunday.com" license="MPL 1.1" copyright="Suki" licenseurl="https://www.mozilla.org/en-US/MPL/1.1/">SimpleSEF mod</credits>
 		<require-file name="Sources/SimpleSEF.php" destination="$sourcedir">The file that handles everything</require-file>
 		<require-dir name="Sources/SimpleSEF-Ext" destination="$sourcedir">Source library</require-dir>
 		<require-dir name="Sources/SimpleSEF-Db" destination="$sourcedir">Source library</require-dir>
