@@ -48,7 +48,7 @@ class SimpleSEF
 	/**
 	 * @var array All ignored actions used in the forum
 	 */
-	protected $ignoreactions = array('admin', 'openidreturn', 'uploadAttach');
+	protected $ignoreactions = array('admin', 'openidreturn', 'uploadAttach', '.xml', 'breezeajax', 'breezecover', 'breezemood', 'dlattach', 'viewsmfile', 'xmlhttp');
 	/**
 	 * @var array Actions that have aliases
 	 */
