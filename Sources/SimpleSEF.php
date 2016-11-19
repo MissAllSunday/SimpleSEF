@@ -181,7 +181,8 @@ class SimpleSEF
 		}
 
 		// Parse the url
-		if (!empty($_GET['q'])) {
+		if (!empty($_GET['q']))
+		{
 			$querystring = $this->route($_GET['q']);
 			$_GET = $querystring + $_GET;
 			unset($_GET['q']);
@@ -658,8 +659,8 @@ class SimpleSEF
 			// Clean up the passed in arrays
 			if (isset($_POST['original'], $_POST['alias'])) {
 				// Make sure we don't allow duplicate actions or aliases
-				$_POST['original'] = array_unique(array_filter($_POST['original'], create_function('$x', 'return $x != \'\';')));
-				$_POST['alias'] = array_unique(array_filter($_POST['alias'], create_function('$x', 'return $x != \'\';')));
+				$_POST['original'] = array_unique(array_filter($_POST['original'], function($x){return $x != '';}));
+				$_POST['alias'] = array_unique(array_filter($_POST['alias'], function($x){return $x != '';}));
 				$alias_original = array_intersect_key($_POST['original'], $_POST['alias']);
 				$alias_new = array_intersect_key($_POST['alias'], $_POST['original']);
 			}
@@ -1285,7 +1286,7 @@ class SimpleSEF
 	 */
 	protected function explode_csv($str)
 	{
-		return!empty($str) ? preg_replace_callback('/^"(.*)"$/', create_function('$match', 'return trim($match[1]);'), preg_split('/,(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', trim($str))) : array();
+		return!empty($str) ? preg_replace_callback('/^"(.*)"$/', function($match){ return trim($match[1]);}, preg_split('/,(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', trim($str))) : array();
 	}
 
 	/**
