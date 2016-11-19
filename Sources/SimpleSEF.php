@@ -92,7 +92,7 @@ class SimpleSEF
 
 		$this->actions = !empty($modSettings['simplesef_actions']) ? explode(',', $modSettings['simplesef_actions']) : array();
 		$this->ignoreactions = array_merge($this->ignoreactions, !empty($modSettings['simplesef_ignore_actions']) ? explode(',', $modSettings['simplesef_ignore_actions']) : array());
-		$this->aliasactions = !empty($modSettings['simplesef_aliases']) ? unserialize($modSettings['simplesef_aliases']) : array();
+		$this->aliasactions = !empty($modSettings['simplesef_aliases']) ? safe_unserialize($modSettings['simplesef_aliases']) : array();
 		$this->useractions = !empty($modSettings['simplesef_useractions']) ? explode(',', $modSettings['simplesef_useractions']) : array();
 		$this->stripWords = !empty($modSettings['simplesef_strip_words']) ? $this->explode_csv($modSettings['simplesef_strip_words']) : array();
 		$this->stripChars = !empty($modSettings['simplesef_strip_chars']) ? $this->explode_csv($modSettings['simplesef_strip_chars']) : array();
@@ -645,7 +645,7 @@ class SimpleSEF
 
 		$context['sub_template'] = 'alias_settings';
 
-		$context['simplesef_aliases'] = !empty($modSettings['simplesef_aliases']) ? unserialize($modSettings['simplesef_aliases']) : array();
+		$context['simplesef_aliases'] = !empty($modSettings['simplesef_aliases']) ? safe_unserialize($modSettings['simplesef_aliases']) : array();
 
 		$context['post_url'] = $scripturl . '?action=admin;area=simplesef;sa=alias';
 
@@ -673,7 +673,7 @@ class SimpleSEF
 					unset($aliases[$orig]);
 
 			$updates = array(
-				'simplesef_aliases' => serialize($aliases),
+				'simplesef_aliases' => safe_serialize($aliases),
 			);
 
 			updateSettings($updates);
