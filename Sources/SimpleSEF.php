@@ -118,18 +118,19 @@ class SimpleSEF
 
 		if ($done && !$force)
 			return;
-		$done = TRUE;
+
+		$done = true;
 
 		$this->loadBoardNames($force);
 		$this->loadExtensions($force);
 		$this->fixHooks($force);
 
-		$this->log('Pre-fix GET:' . var_export($_GET, TRUE));
+		$this->log('Pre-fix GET:' . var_export($_GET, true));
 
 		// We need to fix our GET array too...
 		parse_str(preg_replace('~&(\w+)(?=&|$)~', '&$1=', strtr($_SERVER['QUERY_STRING'], array(';?' => '&', ';' => '&', '%00' => '', "\0" => ''))), $_GET);
 
-		$this->log('Post-fix GET:' . var_export($_GET, TRUE), 'Init Complete (forced: ' . ($force ? 'true' : 'false') . ')');
+		$this->log('Post-fix GET:' . var_export($_GET, true), 'Init Complete (forced: ' . ($force ? 'true' : 'false') . ')');
 	}
 
 	/**
@@ -355,14 +356,14 @@ class SimpleSEF
 	 * @param string $subject The subject of the email
 	 * @param string $message Body of the email
 	 * @param string $header Header of the email (we don't adjust this)
-	 * @return boolean Always returns TRUE to prevent SMF from erroring
+	 * @return boolean Always returns true to prevent SMF from erroring
 	 */
 	public function fixEmailOutput(&$subject, &$message, &$header)
 	{
 		global $modSettings;
 
 		if (empty($modSettings['simplesef_enable']))
-			return TRUE;
+			return true;
 
 		// We're just fixing the subject and message
 		$subject = $this->ob_simplesef($subject);
@@ -371,7 +372,7 @@ class SimpleSEF
 		$this->log('Rewriting email output');
 
 		// We must return true, otherwise we fail!
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -415,13 +416,13 @@ class SimpleSEF
 		$counter = array_search('featuresettings', array_keys($menu_buttons['admin']['sub_buttons'])) + 1;
 
 		$menu_buttons['admin']['sub_buttons'] = array_merge(
-			array_slice($menu_buttons['admin']['sub_buttons'], 0, $counter, TRUE), array('simplesef' => array(
+			array_slice($menu_buttons['admin']['sub_buttons'], 0, $counter, true), array('simplesef' => array(
 				'title' => $txt['simplesef'],
 				'href' => $scripturl . '?action=admin;area=simplesef',
 				'sub_buttons' => array(
 					'basic' => array('title' => $txt['simplesef_basic'], 'href' => $scripturl . '?action=admin;area=simplesef;sa=basic'),
 				),
-			)), array_slice($menu_buttons['admin']['sub_buttons'], $counter, count($menu_buttons['admin']['sub_buttons']), TRUE)
+			)), array_slice($menu_buttons['admin']['sub_buttons'], $counter, count($menu_buttons['admin']['sub_buttons']), true)
 		);
 
 		if (!empty($modSettings['simplesef_advanced'])) {
@@ -448,7 +449,7 @@ class SimpleSEF
 		$counter = array_search('featuresettings', array_keys($admin_areas['config']['areas'])) + 1;
 
 		$admin_areas['config']['areas'] = array_merge(
-			array_slice($admin_areas['config']['areas'], 0, $counter, TRUE), array('simplesef' => array(
+			array_slice($admin_areas['config']['areas'], 0, $counter, true), array('simplesef' => array(
 				'label' => $txt['simplesef'],
 				'function' => 'SimpleSEF::settings#',
 				'icon' => 'packages.png',
@@ -457,7 +458,7 @@ class SimpleSEF
 					'advanced' => array($txt['simplesef_advanced'], 'enabled' => !empty($modSettings['simplesef_advanced'])),
 					'alias' => array($txt['simplesef_alias'], 'enabled' => !empty($modSettings['simplesef_advanced'])),
 				),
-			)), array_slice($admin_areas['config']['areas'], $counter, count($admin_areas['config']['areas']), TRUE)
+			)), array_slice($admin_areas['config']['areas'], $counter, count($admin_areas['config']['areas']), true)
 		);
 	}
 
@@ -816,9 +817,9 @@ class SimpleSEF
 		foreach ($fixups as $hook => $functions)
 			$modSettings[$hook] = str_replace($hooks[$hook], $fixups[$hook], $modSettings[$hook]);
 
-		cache_put_data('simplesef_fixhooks', TRUE, 3600);
+		cache_put_data('simplesef_fixhooks', true, 3600);
 
-		$this->log('Fixed up integration hooks: ' . var_export($fixups, TRUE));
+		$this->log('Fixed up integration hooks: ' . var_export($fixups, true));
 	}
 
 	/*     * ******************************************
@@ -875,7 +876,7 @@ class SimpleSEF
 			}
 
 			if (empty($this->boardNames[$id]))
-				$this->loadBoardNames(TRUE);
+				$this->loadBoardNames(true);
 			$boardName = !empty($this->boardNames[$id]) ? $this->boardNames[$id] : 'board';
 			if (isset($page) && ($page > 0))
 				$boardName = $boardName . $modSettings['simplesef_space'] . $page;
@@ -1039,7 +1040,7 @@ class SimpleSEF
 			}
 		}
 
-		$this->log('Rerouted "' . $query . '" to ' . var_export($querystring, TRUE));
+		$this->log('Rerouted "' . $query . '" to ' . var_export($querystring, true));
 
 		return $querystring;
 	}
@@ -1299,11 +1300,11 @@ class SimpleSEF
 	public function benchmark($marker)
 	{
 		if (!empty($this->benchMark['marks'][$marker])) {
-			$this->benchMark['marks'][$marker]['stop'] = microtime(TRUE);
+			$this->benchMark['marks'][$marker]['stop'] = microtime(true);
 			$this->benchMark['total'] += $this->benchMark['marks'][$marker]['stop'] - $this->benchMark['marks'][$marker]['start'];
 		}
 		else
-			$this->benchMark['marks'][$marker]['start'] = microtime(TRUE);
+			$this->benchMark['marks'][$marker]['start'] = microtime(true);
 	}
 
 	/**
