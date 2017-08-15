@@ -533,10 +533,13 @@ class SimpleSEF
 		{
 			checkSession();
 
-			if (trim($_POST['simplesef_suffix']) == '')
-				fatal_lang_error('simplesef_suffix_required');
+          // Animaniacs was such an awesome show!
+			if (trim($_POST['simplesef_suffix']) != '')
+                $_POST['simplesef_suffix'] = trim($_POST['simplesef_suffix'], '.');
 
-			$_POST['simplesef_suffix'] = trim($_POST['simplesef_suffix'], '.');
+            // Better be safe than sorry.
+            else
+                $_POST['simplesef_suffix'] = '';
 
 			$save_vars = $config_vars;
 
