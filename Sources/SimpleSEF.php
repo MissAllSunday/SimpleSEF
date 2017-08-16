@@ -533,11 +533,11 @@ class SimpleSEF
 		{
 			checkSession();
 
-          // Animaniacs was such an awesome show!
+            // Animaniacs was such an awesome show
 			if (trim($_POST['simplesef_suffix']) != '')
-                $_POST['simplesef_suffix'] = trim($_POST['simplesef_suffix'], '.');
+                $_POST['simplesef_suffix'] = '.'. trim($_POST['simplesef_suffix'], '.');
 
-            // Better be safe than sorry.
+            // Better safe than sorry.
             else
                 $_POST['simplesef_suffix'] = '';
 
@@ -905,7 +905,7 @@ class SimpleSEF
 		if (!isset($start))
 			$start = '0';
 		if (!empty($modSettings['simplesef_simple']) || !is_numeric($value))
-			return 'topic' . $modSettings['simplesef_space'] . $id . '.' . $modSettings['simplesef_suffix'];
+			return 'topic' . $modSettings['simplesef_space'] . $id . $modSettings['simplesef_suffix'];
 
 		// If the topic id isn't here (probably from a redirect) we need a query to get it
 		if (empty($this->topicNames[$value]))
@@ -921,7 +921,7 @@ class SimpleSEF
 		}
 
 		// Put it all together
-		return $boardName . '/' . $topicName . $modSettings['simplesef_space'] . $value . '.' . $start . '.' . $modSettings['simplesef_suffix'];
+		return $boardName . '/' . $topicName . $modSettings['simplesef_space'] . $value . '.' . $start . $modSettings['simplesef_suffix'];
 	}
 
 	/**
