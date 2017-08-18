@@ -21,7 +21,7 @@ yourboard.com/index.php?action=profile =>> yourboard.com/profile[/nobbc]
 
 ###### Features:
 
-- Makes no core code changes to SMF **AT ALL[**
+- Makes no core code changes to SMF **AT ALL**
 - Works with Apache (mod_rewrite required) or IIS7 (Microsoft URL Rewrite module required + web.config files in your directory)
 - Custom action handling for other mods
 - Action ignoring- Prevent urls with certain actions from being rewritten.
