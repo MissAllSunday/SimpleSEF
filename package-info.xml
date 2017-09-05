@@ -30,7 +30,7 @@
 	<version>2.1.1</version>
 	<type>modification</type>
 
-	<install for="2.1 Beta 2, 2.1 - 2.1.99">
+	<install for="2.1 Beta 4, 2.1 - 2.1.99">
 		<readme parsebbc="true">readme.txt</readme>
 		<license type="inline" parsebbc="false">
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -38,7 +38,7 @@ License, v. 1.1. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://www.mozilla.org/en-US/MPL/1.1/
 		</license>
 		<code>add_settings.php</code>
-		<credits url="http://missallsunday.com" license="MPL 1.1" copyright="Suki" licenseurl="https://www.mozilla.org/en-US/MPL/1.1/">SimpleSEF mod</credits>
+		<credits url="https://missallsunday.com" license="MPL 1.1" copyright="Suki" licenseurl="https://www.mozilla.org/en-US/MPL/1.1/">SimpleSEF mod</credits>
 		<require-file name="Sources/SimpleSEF.php" destination="$sourcedir">The file that handles everything</require-file>
 		<require-dir name="Sources/SimpleSEF-Ext" destination="$sourcedir">Source library</require-dir>
 		<require-dir name="Sources/SimpleSEF-Db" destination="$sourcedir">Source library</require-dir>
@@ -47,7 +47,7 @@ file, You can obtain one at https://www.mozilla.org/en-US/MPL/1.1/
 		<redirect type="inline" url="?action=admin;area=simplesef;sa=basic" timeout="5000">Thank you for installing SimpleSEF, you will now be redirected to the settings page.</redirect>
 	</install>
 
-	<uninstall for="2.1 Beta 2, 2.1 - 2.1.99">
+	<uninstall for="2.1 Beta 4, 2.1 - 2.1.99">
 		<code>remove_settings.php</code>
 		<remove-file name="$languagedir/SimpleSEF.english.php" />
 		<remove-file name="$themedir/SimpleSEF.template.php" />

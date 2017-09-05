@@ -36,7 +36,7 @@ pre_install_check();
 // List settings here in the format: setting_key => default_value.  Escape any "s. (" => \")
 $newSettings = array(
 	'simplesef_space' => '-',
-	'simplesef_suffix' => 'html',
+	'simplesef_suffix' => '',
 	'simplesef_lowercase' => '1',
 	'simplesef_strip_words' => 'a,about,above,across,after,along,around,at,before,behind,below,beneath,beside,between,but,by,down,during,except,for,from,in,inside,into,like,near,of,off,on,onto,out,outside,over,since,through,the,till,to,toward,under,until,up,upon,with,within,without',
 	'simplesef_ignore_actions' => 'dlattach,.xml,xmlhttp,viewsmfile,breezeajax,breezemood,breezecover',
@@ -49,8 +49,9 @@ $newSettings['simplesef_strip_chars'] = empty($smcFunc['db_query']) ? '&quot,&am
 updateSettings($newSettings);
 
 // Add hooks (for 2.0)
-if (!empty($smcFunc['db_query'])) {
-	$sef_functions = array(
+if (!empty($smcFunc['db_query']))
+{
+	$sef_functions = [
 		'integrate_pre_include' => '$sourcedir/SimpleSEF.php',
 		'integrate_pre_load' => 'SimpleSEF::convertQueryString#',
 		'integrate_buffer' => 'SimpleSEF::ob_simplesef#',
@@ -60,10 +61,10 @@ if (!empty($smcFunc['db_query'])) {
 		'integrate_admin_areas' => 'SimpleSEF::adminAreas#',
 		'integrate_menu_buttons' => 'SimpleSEF::menuButtons#',
 		'integrate_actions' => 'SimpleSEF::actionArray#',
-	);
+	];
 
 	foreach ($sef_functions as $hook => $function)
-		add_integration_function($hook, $function, TRUE);
+		add_integration_function($hook, $function, true);
 }
 
 if (addHtaccess() === false)
@@ -100,29 +101,40 @@ RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]';
 		$current_htaccess = file_get_contents($boarddir . '/.htaccess');
 
 		// Only change something if the mod hasn't been addressed yet.
-		if (strpos($current_htaccess, 'RewriteRule ^(.*)$ index.php') === false) {
-			if (($ht_handle = @fopen(dirname(__FILE__) . '/.htaccess', 'ab'))) {
+		if (strpos($current_htaccess, 'RewriteRule ^(.*)$ index.php') === false)
+		{
+			if (($ht_handle = @fopen(dirname(__FILE__) . '/.htaccess', 'ab')))
+			{
 				fwrite($ht_handle, $htaccess_addition);
 				fclose($ht_handle);
 				return true;
 			}
+
 			else
 				return false;
 		}
+
 		else
 			return true;
 	}
+
 	elseif (file_exists($boarddir . '/.htaccess'))
 		return strpos(file_get_contents($boarddir . '/.htaccess'), 'RewriteRule ^(.*)$ index.php') !== false;
-	elseif (is_writable($boarddir)) {
-		if (($ht_handle = fopen($boarddir . '/.htaccess', 'wb'))) {
+
+	elseif (is_writable($boarddir))
+	{
+		if (($ht_handle = fopen($boarddir . '/.htaccess', 'wb')))
+		{
 			fwrite($ht_handle, trim($htaccess_addition));
 			fclose($ht_handle);
+
 			return true;
 		}
+
 		else
 			return false;
 	}
+
 	else
 		return false;
 }
