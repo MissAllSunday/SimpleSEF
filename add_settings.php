@@ -35,7 +35,7 @@ pre_install_check();
 
 // List settings here in the format: setting_key => default_value.  Escape any "s. (" => \")
 $newSettings = array(
-	'simplesef_space' => '_',
+	'simplesef_space' => '-',
 	'simplesef_suffix' => 'html',
 	'simplesef_lowercase' => '1',
 	'simplesef_strip_words' => 'a,about,above,across,after,along,around,at,before,behind,below,beneath,beside,between,but,by,down,during,except,for,from,in,inside,into,like,near,of,off,on,onto,out,outside,over,since,through,the,till,to,toward,under,until,up,upon,with,within,without',
@@ -69,13 +69,13 @@ if (!empty($smcFunc['db_query'])) {
 if (addHtaccess() === false)
 	log_error('Could not add or edit .htaccess file upon install of SimpleSEF', 'debug');
 
-if (SMF == 'SSI') 
+if (SMF == 'SSI')
 {
 	fatal_error('<b>This isn\'t really an error, just a message telling you that the settings have been entered into the database!</b><br />');
 	@unlink(__FILE__);
 }
 
-function pre_install_check() 
+function pre_install_check()
 {
 	global $modSettings, $txt;
 
@@ -84,7 +84,7 @@ function pre_install_check()
 		fatal_error('<b>You are currently using the ' . $char_set . ' character set and your server does not have functions available to convert to UTF-8.  In order to use this mod, you will either need to convert your board to UTF-8 or ask your host to recompile PHP with with the Iconv or Multibyte String extensions.</b>');
 }
 
-function addHtaccess() 
+function addHtaccess()
 {
 	global $boarddir;
 
