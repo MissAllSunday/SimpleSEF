@@ -24,6 +24,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+// Version check.
+if (version_compare(PHP_VERSION, '5.6.0', '<'))
+	exit('This mod needs PHP 5.6 or greater. You will not be able to install/use this mod, contact your host and ask for a php upgrade.');
+
 // If SSI.php is in the same place as this file, and SMF isn't defined, this is being run standalone.
 if (!defined('SMF') && file_exists(dirname(__FILE__) . '/SSI.php'))
     require_once(dirname(__FILE__) . '/SSI.php');

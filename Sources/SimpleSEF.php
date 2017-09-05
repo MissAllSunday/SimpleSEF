@@ -466,11 +466,11 @@ class SimpleSEF
 				'label' => $txt['simplesef'],
 				'function' => 'SimpleSEF::settings#',
 				'icon' => 'packages.png',
-				'subsections' => array(
-					'basic' => array($txt['simplesef_basic']),
-					'advanced' => array($txt['simplesef_advanced'], 'enabled' => !empty($modSettings['simplesef_advanced'])),
-					'alias' => array($txt['simplesef_alias'], 'enabled' => !empty($modSettings['simplesef_advanced'])),
-				),
+				'subsections' => [
+					'basic' => [$txt['simplesef_basic']],
+					'advanced' => [$txt['simplesef_advanced'], 'enabled' => !empty($modSettings['simplesef_advanced'])],
+					'alias' => [$txt['simplesef_alias'], 'enabled' => !empty($modSettings['simplesef_advanced'])],
+				],
 			)), array_slice($admin_areas['config']['areas'], $counter, count($admin_areas['config']['areas']), true)
 		);
 	}
